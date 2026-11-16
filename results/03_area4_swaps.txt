@@ -1,0 +1,21 @@
+[C11] Every Area 4 change is two cells trading values (6033 of 6033 two-cell changes are exact swaps, all datasets), so Area 4's count of each value never changes (frames whose value counts differ from the run's first frame: 0).
+   discovery: {'swaps': 4022, 'improve_at_t': 4016, 'improve_after_other_areas': 6, 'of_which_touch_boundary': 6, 'violations': 0}
+   heldout: {'swaps': 2002, 'improve_at_t': 2002, 'improve_after_other_areas': 0, 'of_which_touch_boundary': 0, 'violations': 0}
+   group2: {'swaps': 9, 'improve_at_t': 9, 'improve_after_other_areas': 0, 'of_which_touch_boundary': 0, 'violations': 0}
+[C12] Every Area 4 swap strictly increases the number of same-value neighbours (8 surrounding cells, grid edges not wrapped, cells of other areas included): discovery 4022/4022; heldout 2002/2002; group2 9/9. 6 discovery swaps only count as improving once the same-step update of a neighbouring area is applied; 6 of them touch an area boundary.
+   held-out swaps NOT improving under '8-neighbour, no wrap, equal': 0
+   held-out swaps NOT improving under '8-neighbour, no wrap, absdiff': 615
+   held-out swaps NOT improving under '8-neighbour, no wrap, squared': 786
+   held-out swaps NOT improving under '8-neighbour, wrap, equal': 126
+   held-out swaps NOT improving under '8-neighbour, wrap, absdiff': 649
+   held-out swaps NOT improving under '8-neighbour, wrap, squared': 783
+   held-out swaps NOT improving under '4-neighbour, no wrap, equal': 621
+   held-out swaps NOT improving under '4-neighbour, no wrap, absdiff': 723
+   held-out swaps NOT improving under '4-neighbour, no wrap, squared': 813
+   held-out swaps NOT improving under '4-neighbour, wrap, equal': 637
+   held-out swaps NOT improving under '4-neighbour, wrap, absdiff': 773
+   held-out swaps NOT improving under '4-neighbour, wrap, squared': 828
+[C13] Of 12 candidate definitions of 'better' (4 or 8 neighbours, wrapped or not, matching vs value-difference), only ['8-neighbour, no wrap, equal'] has zero non-improving swaps in the held-out runs; the others have 126-828.
+   computing all-pair gains (every step of every run) ...
+[C14] Not every improving pair is swapped: the chance that an improving pair is swapped (if one random pair is tried per step) rises with the size of the improvement. Held-out: +1: 0.56, +2: 0.71, +3: 0.76, +4: 0.87, +5: 0.88; discovery: +1: 0.54, +2: 0.68, +3: 0.78, +4: 0.93, +5: 0.96.
+[C15] Area 4's slow-down can be predicted from Area 4's own grid alone (improving swaps run out as clusters form): using the discovery acceptance rates and nothing from Areas 1-2, the predicted held-out swap rate per step is steps 0-200: predicted 0.103 vs observed 0.135; steps 200-600: predicted 0.042 vs observed 0.043; steps 600-1200: predicted 0.024 vs observed 0.022; steps 1200-2000: predicted 0.016 vs observed 0.012.

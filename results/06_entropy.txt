@@ -1,0 +1,2 @@
+[C26] Per-area entropy, held-out runs (bits, start -> last step): Area 1 3.25 -> 0.78; Area 2 3.26 -> 0.04; Area 3 3.25 -> 2.09; Area 4 3.26 -> 3.26; whole grid 3.31 -> 2.65. Area 4's entropy never moves (largest change 0.000 bits).
+[C27] Each area's entropy follows from its rule: Areas 1 and 2 fall because 4/5 and 0 trap cells (C17, C21); Area 4 is fixed because swaps keep the value counts (C11); Area 3 settles at the entropy of its redraw distribution, H(p) = 2.14 bits (C07), close to its observed level of 2.09 bits (entropy measured on only 100 cells reads slightly low).

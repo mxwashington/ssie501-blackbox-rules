@@ -1,0 +1,21 @@
+datasets: discovery=61 runs x 2001 frames, heldout=30 runs x 2000 frames, group2=1 run x 41 frames
+[C01] Four L-shaped areas of 100 cells each {1: 100, 2: 100, 3: 100, 4: 100}; mean changes per cell per 2,000-step run (discovery) = Area 1: 5.7, Area 2: 1.7, Area 3: 14.6, Area 4: 1.3
+   discovery Area 1: cells changed per step -> number of steps {0: 87453, 1: 34547}
+   discovery Area 2: cells changed per step -> number of steps {0: 111794, 1: 10206}
+   discovery Area 3: cells changed per step -> number of steps {0: 32670, 1: 89330}
+   discovery Area 4: cells changed per step -> number of steps {0: 117978, 2: 4022}
+   heldout   Area 1: cells changed per step -> number of steps {0: 42822, 1: 17148}
+   heldout   Area 2: cells changed per step -> number of steps {0: 55008, 1: 4962}
+   heldout   Area 3: cells changed per step -> number of steps {0: 16147, 1: 43823}
+   heldout   Area 4: cells changed per step -> number of steps {0: 57968, 2: 2002}
+   group2    Area 1: cells changed per step -> number of steps {0: 3, 1: 37}
+   group2    Area 2: cells changed per step -> number of steps {0: 18, 1: 22}
+   group2    Area 3: cells changed per step -> number of steps {0: 3, 1: 37}
+   group2    Area 4: cells changed per step -> number of steps {0: 31, 2: 9}
+[C02] In every dataset, Areas 1-3 never change more than 1 cell in a step, and Area 4 changes either 0 or exactly 2 cells.
+[C03] Cells are picked in random order, not a sweep: in Area 3 the next changed cell is the next cell in reading order only 1.02% of the time (a sweep would give ~100%, random picking ~1%). Changes are spread evenly over the 100 cells (chi-square vs uniform p = 0.81).
+[C04] Reset gives a new random grid every time: 91 distinct starting grids out of 91 resets; digits 0-9 each fill 9.6%-10.3% of a starting grid.
+   Area 1: P(change | picked) by 'value|#side-neighbours equal to it' (n>=5000): {'0|0': 0.998, '0|1': 1.026, '0|2': 0.961, '1|0': 1.022, '1|1': 0.981, '1|2': 0.996, '2|0': 1.012, '2|1': 0.999, '2|2': 1.128, '3|0': 1.018, '3|1': 0.979, '3|2': 0.998, '4|0': 0.081, '4|1': 0.028, '4|2': 0.01, '4|3': 0.004, '4|4': 0.002, '5|0': 0.127, '5|1': 0.039, '5|2': 0.029, '5|3': 0.002, '6|0': 0.997, '6|1': 0.979, '7|0': 1.017, '7|1': 1.041, '8|0': 0.986, '8|1': 0.958, '8|2': 0.953, '9|0': 0.981, '9|1': 0.938, '9|2': 0.956}
+   Area 2: P(change | picked) by 'value|#side-neighbours equal to it' (n>=5000): {'0|0': 0.0, '0|1': 0.0, '0|2': 0.0, '0|3': 0.0, '0|4': 0.0, '1|0': 0.28, '1|1': 0.257, '1|2': 0.219, '1|3': 0.16, '2|0': 0.55, '2|1': 0.522, '2|2': 0.604, '3|0': 0.61, '3|1': 0.57, '4|0': 0.724, '4|1': 0.732, '4|2': 0.907, '5|0': 0.672, '5|1': 0.67, '6|0': 0.783, '6|1': 0.825, '7|0': 0.884, '7|1': 0.926, '8|0': 0.903, '8|1': 0.807, '9|0': 0.925, '9|1': 0.875}
+   Area 3: P(change | picked) by 'value|#side-neighbours equal to it' (n>=5000): {'0|0': 0.631, '0|1': 0.633, '0|2': 0.637, '0|3': 0.641, '0|4': 0.614, '1|0': 0.672, '1|1': 0.67, '1|2': 0.673, '1|3': 0.672, '1|4': 0.597, '2|0': 0.834, '2|1': 0.826, '2|2': 0.827, '2|3': 0.803, '3|0': 0.939, '3|1': 0.937, '3|2': 0.968, '4|0': 0.947, '4|1': 0.927, '4|2': 0.909, '5|0': 0.978, '5|1': 0.985, '6|0': 1.038, '6|1': 1.01, '7|0': 1.031, '7|1': 1.031, '8|0': 1.063, '8|1': 0.985, '9|0': 0.949, '9|1': 0.937}
+[C05] Whether a picked cell changes does NOT depend on how many neighbours match it: in Area 3 and for Area 1's non-4/5 values the change probability is flat across 0-4 matching side-neighbours (largest spread 13 percentage points; Area 1 non-4/5 values change ~100% of the time when picked).

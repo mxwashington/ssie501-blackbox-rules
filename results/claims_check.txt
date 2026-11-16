@@ -1,0 +1,34 @@
+claim  result source                 condition
+C01    PASS   01_selection           all four areas have exactly 100 cells
+C02    PASS   01_selection           Areas 1-3 change at most 1 cell per step; Area 4 changes 0 or 2 (all datasets)
+C03    PASS   01_selection           next change is the next raster cell < 5% of the time; changes uniform over cells (p > 0.05)
+C04    PASS   01_selection           every Reset gives a different starting grid
+C05    PASS   01_selection           change probability flat across matching side-neighbours (spread <= 0.15); Area 1 non-4/5 >= 0.85
+C06    PASS   02_area3_redraw        Area 3: P(-> k) varies by <= 0.08 across old values
+C07    PASS   02_area3_redraw        Area 3: redraw probabilities roughly halve above 1 (ratios 0.4-0.55)
+C08    PASS   02_area3_redraw        Area 3: P(new=0) varies by <= 0.05 with number of zero neighbours
+C09    PASS   02_area3_redraw        Area 3 held-out: same distribution (p > 0.05) and change count within 2% of prediction
+C10    PASS   02_area3_redraw        values >= 10 appear only in Area 3
+C11    PASS   03_area4_swaps         every Area 4 change is an exact swap; value counts never change
+C12    PASS   03_area4_swaps         zero Area 4 swaps fail the 'strictly more matching 8-neighbours' test, in every dataset
+C13    PASS   03_area4_swaps         only the 8-neighbour / no wrap / matching definition has zero exceptions
+C14    PASS   03_area4_swaps         Area 4 held-out swap share rises with the gain (+1 < 0.7, +5 > 0.8, never drops by > 0.05)
+C15    PASS   03_area4_swaps         after step 200, predicted Area 4 swap rate within 0.01 of observed
+C16    PASS   04_area1_branches      no Area 1 change outside 'advance' or 'jump to other branch start' (all datasets)
+C17    PASS   04_area1_branches      Area 1 change count within 2% of prediction; 4/5 exit < 5%; >= 95% end as 4 or 5
+C18    PASS   04_area1_branches      Area 1 first moves jump > 40%, later moves < 15% (both datasets)
+C18b   PASS   04_area1_branches      high-branch later moves jump > 3x as often as low-branch later moves (both datasets)
+C19    PASS   04_area1_branches      jump rate < 5% when the cell moved < 25 steps ago and > 15% after 300+ steps (both datasets)
+C20    PASS   04_area1_branches      no neighbour direction/value pushes the Area 1 jump rate to 0% or 100% (stays within 5-50%)
+C21    PASS   05_area2_parity        0 never changes in Area 2 (all datasets)
+C22    PASS   05_area2_parity        Area 2 rises seen == rises predicted by the mod-10 rule; zero violations
+C23    PASS   05_area2_parity        every Area 2 drop to a lower value is observed
+C24    PASS   05_area2_parity        Area 2 change probabilities agree between datasets within 0.1
+C25    PASS   05_area2_parity        Area 2: drop-to-0 rate rises with zero neighbours; neighbour-copy rate within 0.1 of control
+C26    PASS   06_entropy             Area 4 entropy never changes; Areas 1 and 2 fall below 1 bit
+C27    PASS   06_entropy             Area 3 settles within 0.1 bits of H(p)
+C28    PASS   07_simulate            rebuilt box: Areas 2-4 change counts within 10% and final entropies within 0.1 bits of held-out
+C29    PASS   07_simulate            rebuilt Area 2 final share of zeros within 5 points of real
+C30    PASS   07_simulate            branch-specific rates bring rebuilt Area 1's share of 4s closer to real than one shared rate
+
+31/31 claims pass.

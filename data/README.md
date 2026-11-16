@@ -1,0 +1,11 @@
+# Data
+
+All three datasets record the 20×20 Black Box grid (`BlackBox_N.php`, numerical version) after **every single step**. Each value is the cell's number, 0-9; Area 3 occasionally shows 10-13.
+
+| Folder | Source | Contents | Role |
+|---|---|---|---|
+| `group1_runs/` | SSIE 501 Group 1, scraper notebook (`requests` + `BeautifulSoup`) | `run_00.npy` … `run_60.npy`; each array is (2001, 20, 20): the Reset grid, then 2,000 single steps | **Discovery**: rules are found here |
+| `shared_dataset/` | Shared dataset compiled by W. Zhang (Selenium controller) | `trajectory_001_FULLBOX.npz` … `trajectory_030_FULLBOX.npz`; key `full_history` (2000, 20, 20), `recorded_steps` 1…2000 | **Held-out**: rules are only tested here |
+| `group2/` | SSIE 501 Group 2, `blackbox_collect.py` | `frames.csv`: one row per step (`step`, then 400 cell values in row-major order) | Small extra check |
+
+If the data files are not in this repository, ask the course group that shared them, or recollect them with any of the scrapers above, and place them in these folders with these names. `blackbox/data.py` checks that the frames are consecutive single steps.

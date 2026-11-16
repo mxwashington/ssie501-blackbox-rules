@@ -1,0 +1,51 @@
+{
+ "C28": {
+  "areas": {
+   "1": {
+    "real_changes": 571.6,
+    "sim_changes": 549.2,
+    "real_end_entropy": 0.7948698361486881,
+    "sim_end_entropy": 1.2592516103303226,
+    "entropy_curve_max_gap": 0.48698211002381675
+   },
+   "2": {
+    "real_changes": 165.4,
+    "sim_changes": 167.86666666666667,
+    "real_end_entropy": 0.04443972839101621,
+    "sim_end_entropy": 0.037022174256941126,
+    "entropy_curve_max_gap": 0.2214164736822184
+   },
+   "3": {
+    "real_changes": 1460.7666666666667,
+    "sim_changes": 1468.3333333333333,
+    "real_end_entropy": 2.086209995770996,
+    "sim_end_entropy": 2.0880108546066967,
+    "entropy_curve_max_gap": 0.07400119879237499
+   },
+   "4": {
+    "real_changes": 133.46666666666667,
+    "sim_changes": 141.2,
+    "real_end_entropy": 3.257302883097036,
+    "sim_end_entropy": 3.257302883097036,
+    "entropy_curve_max_gap": 0.0
+   }
+  }
+ },
+ "C29": {
+  "real": {
+   "area1_end_share_4": 0.795,
+   "area1_end_share_45": 0.983,
+   "area2_end_share_0": 0.9946666666666666
+  },
+  "sim": {
+   "area1_end_share_4": 0.757,
+   "area1_end_share_45": 0.9049999999999998,
+   "area2_end_share_0": 0.9953333333333333
+  }
+ },
+ "C30": {
+  "split": 0.757,
+  "shared": 0.4429999999999999,
+  "real": 0.795
+ }
+}

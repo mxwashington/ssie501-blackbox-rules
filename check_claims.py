@@ -1,0 +1,106 @@
+"""Re-test every claim in REPORT.md against the numbers the analysis scripts saved.
+
+Each check reads results/metrics/*.json (written by analysis/0X_*.py) and applies the
+condition stated next to it. Output: a PASS/FAIL table on screen and in results/claims_check.txt.
+Run after run_all.py (or after the analysis scripts):   python check_claims.py
+"""
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+M = {}
+for f in sorted((ROOT / "results" / "metrics").glob("*.json")):
+    for cid, v in json.loads(f.read_text()).items():
+        M[cid] = (f.stem, v)
+
+
+def g(cid):
+    return M[cid][1]
+
+
+CHECKS = [
+    ("C01", "all four areas have exactly 100 cells",
+     lambda: all(v == 100 for v in g("C01")["sizes"].values())),
+    ("C02", "Areas 1-3 change at most 1 cell per step; Area 4 changes 0 or 2 (all datasets)",
+     lambda: all(max(v[a] for a in ("1", "2", "3")) <= 1 for v in g("C02")["max_cells_changed"].values())
+     and all(set(v) <= {0, 2} for v in g("C02")["area4_counts_seen"].values())),
+    ("C03", "next change is the next raster cell < 5% of the time; changes uniform over cells (p > 0.05)",
+     lambda: g("C03")["frac_next_in_raster"] < 0.05 and g("C03")["chi2_uniform_p"] > 0.05),
+    ("C04", "every Reset gives a different starting grid",
+     lambda: g("C04")["distinct_starts"] == g("C04")["n_starts"]),
+    ("C05", "change probability flat across matching side-neighbours (spread <= 0.15); Area 1 non-4/5 >= 0.85",
+     lambda: max(list(g("C05")["spread_area3"].values()) + list(g("C05")["spread_area1"].values())) <= 0.15
+     and g("C05")["area1_nonterminal_min"] >= 0.85),
+    ("C06", "Area 3: P(-> k) varies by <= 0.08 across old values",
+     lambda: all(b - a <= 0.08 for a, b in g("C06")["ranges"].values())),
+    ("C07", "Area 3: redraw probabilities roughly halve above 1 (ratios 0.4-0.55)",
+     lambda: all(0.4 <= r <= 0.55 for r in g("C07")["ratios"])),
+    ("C08", "Area 3: P(new=0) varies by <= 0.05 with number of zero neighbours",
+     lambda: max(g("C08")["p_new0_by_zero_neighbours"].values()) - min(g("C08")["p_new0_by_zero_neighbours"].values()) <= 0.05),
+    ("C09", "Area 3 held-out: same distribution (p > 0.05) and change count within 2% of prediction",
+     lambda: g("C09")["chi2_p"] > 0.05 and abs(g("C09")["observed"] - g("C09")["predicted"]) / g("C09")["predicted"] < 0.02),
+    ("C10", "values >= 10 appear only in Area 3",
+     lambda: g("C10")["by_area"]["1"] == g("C10")["by_area"]["2"] == g("C10")["by_area"]["4"] == 0 and g("C10")["by_area"]["3"] > 0),
+    ("C11", "every Area 4 change is an exact swap; value counts never change",
+     lambda: g("C11")["exact"] == g("C11")["total"] and g("C11")["frames_with_changed_counts"] == 0),
+    ("C12", "zero Area 4 swaps fail the 'strictly more matching 8-neighbours' test, in every dataset",
+     lambda: all(g("C12")[k]["violations"] == 0 for k in ("discovery", "heldout", "group2"))
+     and g("C12")["discovery"]["of_which_touch_boundary"] == g("C12")["discovery"]["improve_after_other_areas"]),
+    ("C13", "only the 8-neighbour / no wrap / matching definition has zero exceptions",
+     lambda: g("C13")["zero_exception_definitions"] == ["8-neighbour, no wrap, equal"]),
+    ("C14", "Area 4 held-out swap share rises with the gain (+1 < 0.7, +5 > 0.8, never drops by > 0.05)",
+     lambda: g("C14")["heldout"][0] < 0.7 and g("C14")["heldout"][4] > 0.8
+     and all(b >= a - 0.05 for a, b in zip(g("C14")["heldout"], g("C14")["heldout"][1:]))),
+    ("C15", "after step 200, predicted Area 4 swap rate within 0.01 of observed",
+     lambda: all(abs(p - o) < 0.01 for k, (p, o) in g("C15")["windows"].items() if not k.startswith("0-"))),
+    ("C16", "no Area 1 change outside 'advance' or 'jump to other branch start' (all datasets)",
+     lambda: all(g("C16")[k].get("other", 0) == 0 for k in ("discovery", "heldout", "group2"))),
+    ("C17", "Area 1 change count within 2% of prediction; 4/5 exit < 5%; >= 95% end as 4 or 5",
+     lambda: abs(g("C17")["observed"] - g("C17")["predicted"]) / g("C17")["observed"] < 0.02
+     and g("C17")["exit_rate_4_5"] < 0.05 and g("C17")["end_share_4_5"] >= 0.95),
+    ("C18", "Area 1 first moves jump > 40%, later moves < 15% (both datasets)",
+     lambda: all(g("C18")[d]["first move"][0] > 0.4 and g("C18")[d]["after an advance"][0] < 0.15 for d in ("discovery", "heldout"))),
+    ("C18b", "high-branch later moves jump > 3x as often as low-branch later moves (both datasets)",
+     lambda: all(g("C18b")[d]["high branch, later moves"][0] > 3 * g("C18b")[d]["low branch, later moves"][0] for d in ("discovery", "heldout"))),
+    ("C19", "jump rate < 5% when the cell moved < 25 steps ago and > 15% after 300+ steps (both datasets)",
+     lambda: all(g("C19")[d]["0"][0] < 0.05 and g("C19")[d]["300"][0] > 0.15 for d in ("discovery", "heldout"))),
+    ("C20", "no neighbour direction/value pushes the Area 1 jump rate to 0% or 100% (stays within 5-50%)",
+     lambda: g("C20")["per_direction_min"] > 0.05 and g("C20")["per_direction_max"] < 0.5),
+    ("C21", "0 never changes in Area 2 (all datasets)",
+     lambda: all(v == 0 for v in g("C21").values())),
+    ("C22", "Area 2 rises seen == rises predicted by the mod-10 rule; zero violations",
+     lambda: g("C22")["predicted_rises"] == g("C22")["seen_rises"] and all(v == 0 for v in g("C22")["violations"].values())),
+    ("C23", "every Area 2 drop to a lower value is observed",
+     lambda: g("C23")["drops_never_seen"] == []),
+    ("C24", "Area 2 change probabilities agree between datasets within 0.1",
+     lambda: all(abs(g("C24")["discovery"][k] - g("C24")["heldout"][k]) < 0.1 for k in g("C24")["discovery"])),
+    ("C25", "Area 2: drop-to-0 rate rises with zero neighbours; neighbour-copy rate within 0.1 of control",
+     lambda: list(g("C25")["p_drop_to_0_by_zero_neighbours"].values())[-1] > list(g("C25")["p_drop_to_0_by_zero_neighbours"].values())[0] + 0.3
+     and g("C25")["new_in_own_nbrs"] - g("C25")["new_in_random_cell_nbrs"] < 0.1),
+    ("C26", "Area 4 entropy never changes; Areas 1 and 2 fall below 1 bit",
+     lambda: g("C26")["4"]["area4_max_change"] == 0 and g("C26")["1"]["end"] < 1 and g("C26")["2"]["end"] < 1),
+    ("C27", "Area 3 settles within 0.1 bits of H(p)",
+     lambda: abs(g("C27")["H_p"] - g("C27")["area3_end"]) < 0.1),
+    ("C28", "rebuilt box: Areas 2-4 change counts within 10% and final entropies within 0.1 bits of held-out",
+     lambda: all(abs(r["sim_changes"] - r["real_changes"]) / r["real_changes"] < 0.1 and abs(r["sim_end_entropy"] - r["real_end_entropy"]) < 0.1
+                 for a, r in g("C28")["areas"].items() if a != "1")),
+    ("C29", "rebuilt Area 2 final share of zeros within 5 points of real",
+     lambda: abs(g("C29")["sim"]["area2_end_share_0"] - g("C29")["real"]["area2_end_share_0"]) < 0.05),
+    ("C30", "branch-specific rates bring rebuilt Area 1's share of 4s closer to real than one shared rate",
+     lambda: abs(g("C30")["split"] - g("C30")["real"]) < abs(g("C30")["shared"] - g("C30")["real"])),
+]
+
+lines = [f"{'claim':6s} {'result':6s} {'source':22s} condition"]
+n_fail = 0
+for cid, text, fn in CHECKS:
+    try:
+        ok = bool(fn())
+    except Exception as e:  # missing metric = not proven
+        ok = False; text += f"  [error: {e!r}]"
+    n_fail += not ok
+    lines.append(f"{cid:6s} {'PASS' if ok else 'FAIL':6s} {M.get(cid, ('missing',))[0]:22s} {text}")
+lines.append(f"\n{len(CHECKS) - n_fail}/{len(CHECKS)} claims pass.")
+out = "\n".join(lines)
+print(out)
+(ROOT / "results" / "claims_check.txt").write_text(out + "\n")
+raise SystemExit(1 if n_fail else 0)

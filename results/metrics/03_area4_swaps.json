@@ -1,0 +1,101 @@
+{
+ "C11": {
+  "exact": 6033,
+  "total": 6033,
+  "frames_with_changed_counts": 0
+ },
+ "C12": {
+  "discovery": {
+   "swaps": 4022,
+   "improve_at_t": 4016,
+   "improve_after_other_areas": 6,
+   "of_which_touch_boundary": 6,
+   "violations": 0
+  },
+  "heldout": {
+   "swaps": 2002,
+   "improve_at_t": 2002,
+   "improve_after_other_areas": 0,
+   "of_which_touch_boundary": 0,
+   "violations": 0
+  },
+  "group2": {
+   "swaps": 9,
+   "improve_at_t": 9,
+   "improve_after_other_areas": 0,
+   "of_which_touch_boundary": 0,
+   "violations": 0
+  }
+ },
+ "C13": {
+  "alternatives": {
+   "8-neighbour, no wrap, equal": 0,
+   "8-neighbour, no wrap, absdiff": 615,
+   "8-neighbour, no wrap, squared": 786,
+   "8-neighbour, wrap, equal": 126,
+   "8-neighbour, wrap, absdiff": 649,
+   "8-neighbour, wrap, squared": 783,
+   "4-neighbour, no wrap, equal": 621,
+   "4-neighbour, no wrap, absdiff": 723,
+   "4-neighbour, no wrap, squared": 813,
+   "4-neighbour, wrap, equal": 637,
+   "4-neighbour, wrap, absdiff": 773,
+   "4-neighbour, wrap, squared": 828
+  },
+  "zero_exception_definitions": [
+   "8-neighbour, no wrap, equal"
+  ]
+ },
+ "C14": {
+  "heldout": [
+   0.5635977360198872,
+   0.7136641201587871,
+   0.7604982196130208,
+   0.8738823340915929,
+   0.8837230544392681
+  ],
+  "discovery": [
+   0.5425443451722624,
+   0.6765245333290651,
+   0.7793516424117783,
+   0.9330773695258261,
+   0.9612420171770971
+  ],
+  "heldout_swaps_by_gain": [
+   957.0,
+   584.0,
+   266.0,
+   119.0,
+   43.0,
+   33.0
+  ],
+  "heldout_exposure": [
+   1698.0195959591847,
+   818.3121212119541,
+   349.77070707062796,
+   136.17393939391323,
+   48.65777777777221,
+   24.579797979792854
+  ]
+ },
+ "C15": {
+  "windows": {
+   "0-200": [
+    0.10274017812339442,
+    0.13533333333333333
+   ],
+   "200-600": [
+    0.04182055857223853,
+    0.0425
+   ],
+   "600-1200": [
+    0.024006938017822044,
+    0.021944444444444444
+   ],
+   "1200-2000": [
+    0.016497847075724048,
+    0.011889862327909888
+   ]
+  }
+ }
+}

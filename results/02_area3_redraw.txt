@@ -1,0 +1,16 @@
+   P(old -> new | picked) for old = 0..9 (rows), new = 0..6 (cols); diagonal = probability of redrawing the same value:
+   old 0   -   0.327 0.169 0.076 0.033 0.016 0.007
+   old 1 0.367   -   0.167 0.075 0.035 0.015 0.007
+   old 2 0.359 0.330   -   0.077 0.034 0.017 0.009
+   old 3 0.368 0.338 0.175   -   0.031 0.016 0.007
+   old 4 0.352 0.320 0.169 0.071   -   0.017 0.009
+   old 5 0.359 0.324 0.171 0.079 0.031   -   0.010
+   old 6 0.375 0.323 0.211 0.078 0.035 0.012   -  
+   old 7 0.386 0.325 0.176 0.076 0.039 0.013 0.010
+   old 8 0.367 0.371 0.171 0.079 0.023 0.013 0.011
+   old 9 0.345 0.343 0.140 0.072 0.035 0.011 0.001
+[C06] In Area 3 the new value does not depend on the old value: the rows of the transition table are nearly identical. P(->0) ranges only 0.35-0.39 across old values; P(->1) ranges only 0.32-0.37 across old values; P(->2) ranges only 0.14-0.21 across old values; P(->3) ranges only 0.07-0.08 across old values.
+[C07] The fixed redraw distribution (fitted on discovery data) is P(0)=0.363, P(1)=0.329, P(2)=0.169, P(3)=0.076, P(4)=0.034, P(5)=0.016, P(6)=0.008, P(7)=0.003; above 1 each value is about half as likely as the one before (ratios 0.51, 0.45, 0.45, 0.47, 0.47, 0.43).
+[C08] The new value also ignores the neighbours: P(new = 0) stays 0.31-0.33 whether 0 or 7 of the 8 neighbours are 0.
+[C09] Held-out test: the new-value distribution in the held-out runs matches discovery (chi-square p = 0.97), and 'one random cell redrawn from p each step' predicts 43,923 changing steps vs 43,823 observed (-0.2%).
+[C10] Values 10-13 appear only in Area 3 (cell-steps with a value >= 10 by area: {1: 0, 2: 0, 3: 5635, 4: 0}). They are the rare tail of the redraw distribution: P(new >= 10) = 0.0003.
