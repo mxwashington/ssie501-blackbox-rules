@@ -88,6 +88,22 @@ CHECKS = [
      lambda: abs(g("C29")["sim"]["area2_end_share_0"] - g("C29")["real"]["area2_end_share_0"]) < 0.05),
     ("C30", "branch-specific rates bring rebuilt Area 1's share of 4s closer to real than one shared rate",
      lambda: abs(g("C30")["split"] - g("C30")["real"]) < abs(g("C30")["shared"] - g("C30")["real"])),
+    ("C31", "printed model tables: every Region 2 target row and the Region 3 table sum to exactly 1; all jump/swap rates in [0, 1]",
+     lambda: all(abs(sum(r.values()) - 1) < 1e-9 for r in g("C31")["region2"]["target"].values())
+     and abs(sum(g("C31")["region3"]["p"].values()) - 1) < 1e-9
+     and all(0 <= v <= 1 for br in g("C31")["region1"]["jump"].values() for v in br.values())
+     and all(0 <= v <= 1 for v in g("C31")["region4"]["accept"].values())),
+    ("C32", "the WRITTEN model: change counts within 10% for all regions; final entropy within 0.1 bits for Regions 2-4",
+     lambda: all(abs(g("C32")[f"changes_area{a}"]["model"] - g("C32")[f"changes_area{a}"]["real"]) / g("C32")[f"changes_area{a}"]["real"] < 0.1 for a in (1, 2, 3, 4))
+     and all(abs(g("C32")[f"end_entropy_area{a}"]["model"] - g("C32")[f"end_entropy_area{a}"]["real"]) < 0.1 for a in (2, 3, 4))),
+    ("C33", "Region 3: the free table beats every standard family by > 10 AIC points; Poisson fits worst",
+     lambda: g("C33")["aic_gap_to_table"] > 10
+     and max((v["aic"], k) for k, v in g("C33")["families"].items())[1] == "Poisson(lam)"),
+    ("C34", "worked examples obey the written rules (Region 1 advance/jump, Region 2 allowed rise, Region 4 gain >= 1)",
+     lambda: abs(g("C34")["region1_advance"]["new"] - g("C34")["region1_advance"]["old"]) == 1
+     and g("C34")["region1_jump"]["new"] in (0, 9)
+     and g("C34")["region2_rise"]["new"] in {(g("C34")["region2_rise"]["old"] * k) % 10 for k in range(10)}
+     and g("C34")["region4_swap"]["gain"] >= 1),
 ]
 
 lines = [f"{'claim':6s} {'result':6s} {'source':22s} condition"]

@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-for script in sorted((ROOT / "analysis").glob("0*.py")):
+for script in sorted((ROOT / "analysis").glob("[0-9][0-9]_*.py")):
     print(f"\n=== {script.name} ===", flush=True)
     subprocess.run([sys.executable, str(script)], check=True, cwd=ROOT)
 print("\n=== check_claims.py ===", flush=True)

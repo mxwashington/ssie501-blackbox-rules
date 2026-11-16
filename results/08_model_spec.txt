@@ -1,0 +1,23 @@
+[C31] The printed model tables (all fitted on discovery runs only, saved to results/model_tables.json): Region 1 jump rates low branch {'first': 0.36, '0-49': 0.02, '50-99': 0.04, '100-149': 0.08, '150-199': 0.09, '200+': 0.1}, high branch {'first': 0.63, '0-49': 0.06, '50-99': 0.18, '100-149': 0.26, '150-199': 0.33, '200+': 0.39}, exit rates {'4': np.float64(0.013), '5': np.float64(0.065)}; Region 2 change rates {'1': np.float64(0.26), '2': np.float64(0.54), '3': np.float64(0.6), '4': np.float64(0.73), '5': np.float64(0.67), '6': np.float64(0.79), '7': np.float64(0.89), '8': np.float64(0.88), '9': np.float64(0.92)}; Region 3 draw table {'0': 0.3634, '1': 0.3292, '2': 0.169, '3': 0.0756, '4': 0.0338, '5': 0.0159, '6': 0.0076, '7': 0.0032, '8': 0.0015, '9': 0.0005, '10': 0.0002, '11': 0.0001}; Region 4 swap rates {'1': 0.54, '2': 0.68, '3': 0.78, '4': 0.93, '5': 0.96}.
+   Region 2 target row for old value 1: {'0': 0.88, '1': 0.0, '2': 0.01, '3': 0.02, '4': 0.02, '5': 0.01, '6': 0.02, '7': 0.01, '8': 0.02, '9': 0.01}  (from 1779 changes)
+   Region 2 target row for old value 2: {'0': 0.53, '1': 0.26, '2': 0.0, '3': 0.0, '4': 0.08, '5': 0.0, '6': 0.06, '7': 0.0, '8': 0.07, '9': 0.0}  (from 1628 changes)
+   Region 2 target row for old value 3: {'0': 0.39, '1': 0.24, '2': 0.2, '3': 0.0, '4': 0.03, '5': 0.03, '6': 0.04, '7': 0.02, '8': 0.03, '9': 0.02}  (from 981 changes)
+   Region 2 target row for old value 4: {'0': 0.48, '1': 0.11, '2': 0.17, '3': 0.06, '4': 0.0, '5': 0.0, '6': 0.1, '7': 0.0, '8': 0.08, '9': 0.0}  (from 1314 changes)
+   Region 2 target row for old value 5: {'0': 0.65, '1': 0.13, '2': 0.09, '3': 0.07, '4': 0.06, '5': 0.0, '6': 0.0, '7': 0.0, '8': 0.0, '9': 0.0}  (from 878 changes)
+   Region 2 target row for old value 6: {'0': 0.49, '1': 0.07, '2': 0.14, '3': 0.04, '4': 0.13, '5': 0.03, '6': 0.0, '7': 0.0, '8': 0.1, '9': 0.0}  (from 1134 changes)
+   Region 2 target row for old value 7: {'0': 0.28, '1': 0.11, '2': 0.12, '3': 0.09, '4': 0.11, '5': 0.09, '6': 0.09, '7': 0.0, '8': 0.06, '9': 0.05}  (from 711 changes)
+   Region 2 target row for old value 8: {'0': 0.47, '1': 0.04, '2': 0.15, '3': 0.03, '4': 0.16, '5': 0.02, '6': 0.11, '7': 0.02, '8': 0.0, '9': 0.0}  (from 1065 changes)
+   Region 2 target row for old value 9: {'0': 0.29, '1': 0.1, '2': 0.14, '3': 0.1, '4': 0.08, '5': 0.08, '6': 0.08, '7': 0.06, '8': 0.07, '9': 0.0}  (from 716 changes)
+   changes_area1        real  571.6000   written model  552.4333
+   end_entropy_area1    real    0.7841   written model    1.3081
+   changes_area2        real  165.4000   written model  169.6667
+   end_entropy_area2    real    0.0417   written model    0.0337
+   changes_area3        real 1460.7667   written model 1462.5333
+   end_entropy_area3    real    2.0926   written model    2.0648
+   changes_area4        real  133.4667   written model  141.4667
+   end_entropy_area4    real    3.2573   written model    3.2573
+   area1_end_4          real    0.7950   written model    0.7470
+   area1_end_45         real    0.9830   written model    0.8950
+   area2_end_0          real    0.9947   written model    0.9957
+   area3_ge10_share     real    0.0002   written model    0.0004
+[C32] The WRITTEN model (only the printed, rounded tables, implemented line by line from the specification in blackbox/spec_model.py), started from the 30 held-out starting grids: cell changes per run real vs model = Region 1 572 vs 552; Region 2 165 vs 170; Region 3 1461 vs 1463; Region 4 133 vs 141; final entropy (bits) = Region 1 0.78 vs 1.31; Region 2 0.04 vs 0.03; Region 3 2.09 vs 2.06; Region 4 3.26 vs 3.26; Region 1 ends 80% 4s vs 75%; Region 2 ends 99% zeros vs 100%.

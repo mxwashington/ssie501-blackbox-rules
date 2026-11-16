@@ -1,0 +1,23 @@
+Region 1 advance: frame 200 -> 201, cell (row 1, col 3): 9 -> 8
+Region 1 jump:    frame 201 -> 202, cell (row 2, col 11): 0 -> 9
+Region 2 rise:    frame 4 -> 5, cell (row 9, col 9): 1 -> 6  (allowed rises from 1: [2, 3, 4, 5, 6, 7, 8, 9])
+Region 2 drop:    frame 203 -> 204, cell (row 2, col 15): 6 -> 1
+Region 3 redraw:  frame 200 -> 201, cell (row 14, col 12): 0 -> 1
+Region 4 swap:    frame 224 -> 225, cells (row 17, col 15) = 0 and (row 18, col 10) = 6
+   cell 1 before:
+        1   8   8
+        8 [0]   8
+        6   8   5
+   cell 2 before:
+        6   4   6
+        0 [6]   3
+        0   7   3
+   cell 1 after:
+        1   8   8
+        8 [6]   8
+        6   8   5
+   cell 2 after:
+        6   4   6
+        0 [0]   3
+        0   7   3
+[C34] Worked examples from held-out run 1 (frames counted from 0): Region 1 advance 9->8, jump 0->9; Region 2 rise 1->6, drop 6->1; Region 3 redraw 0->1; Region 4 swap of 0 and 6: matching neighbours 0+2=2 before, 1+2=3 after, gain 1.

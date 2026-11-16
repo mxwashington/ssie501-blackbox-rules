@@ -30,5 +30,9 @@ C27    PASS   06_entropy             Area 3 settles within 0.1 bits of H(p)
 C28    PASS   07_simulate            rebuilt box: Areas 2-4 change counts within 10% and final entropies within 0.1 bits of held-out
 C29    PASS   07_simulate            rebuilt Area 2 final share of zeros within 5 points of real
 C30    PASS   07_simulate            branch-specific rates bring rebuilt Area 1's share of 4s closer to real than one shared rate
+C31    PASS   08_model_spec          printed model tables: every Region 2 target row and the Region 3 table sum to exactly 1; all jump/swap rates in [0, 1]
+C32    PASS   08_model_spec          the WRITTEN model: change counts within 10% for all regions; final entropy within 0.1 bits for Regions 2-4
+C33    PASS   09_area3_family        Region 3: the free table beats every standard family by > 10 AIC points; Poisson fits worst
+C34    PASS   10_worked_example      worked examples obey the written rules (Region 1 advance/jump, Region 2 allowed rise, Region 4 gain >= 1)
 
-31/31 claims pass.
+35/35 claims pass.
