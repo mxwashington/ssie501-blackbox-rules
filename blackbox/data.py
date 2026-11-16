@@ -46,3 +46,29 @@ def load_group2():
     steps = [int(r[0]) for r in rows]
     assert set(np.diff(steps).tolist()) == {1}
     return [np.array([[int(x) for x in r[1:]] for r in rows]).reshape(-1, 20, 20)]
+
+
+def load_group5(cycles=1):
+    """Group 5's own recordings (data/group5_runs/*.json, made with collect/recorder.js).
+
+    Each file holds the Reset grid and, for every press of "Next n Step", the cells that changed.
+    Returns the runs recorded with the given n as arrays of shape (presses + 1, 20, 20):
+    frame 0 is the Reset grid, frame k the grid after k presses (k x n steps).
+    """
+    import json
+    out = []
+    for f in sorted(glob.glob(str(DATA / "group5_runs" / "blackbox_*.json"))):
+        run = json.loads(Path(f).read_text())
+        if run.get("cycles") != cycles or run.get("label") == "pilot":
+            continue
+        assert not run["errors"], f"{f}: recorder reported errors"
+        assert run["steps"] == [run["reset_step"] + cycles * (k + 1) for k in range(len(run["steps"]))], f"{f}: step counter gaps"
+        g = np.array(run["reset"], dtype=np.int64)
+        frames = [g.reshape(20, 20).copy()]
+        for ch in run["changes"]:
+            for i, v in ch:
+                g[i] = v
+            frames.append(g.reshape(20, 20).copy())
+        assert (frames[-1].ravel() == np.array(run["final"])).all(), f"{f}: replay does not reach the final grid"
+        out.append(np.array(frames))
+    return out

@@ -119,6 +119,11 @@ CHECKS = [
     ("C41", "rebuilt model within 10% of the held-out runs on cells changed per region, and within 0.1 bits on end entropy",
      lambda: all(abs(v["model"] - v["real"]) <= 0.10 * v["real"] for k, v in g("C41")["table"].items() if k.endswith("_changed"))
      and all(abs(v["model"] - v["real"]) <= 0.1 for k, v in g("C41")["table"].items() if "entropy" in k)),
+    ("C42", "the first step after Reset follows the Region 1 gates in every Group 1 run",
+     lambda: g("C42")["r1_gate_ok"] == g("C42")["r1_changes"] > 0 and g("C42")["transitions"] == 61),
+    ("C43", "late Region 1 activity matches the rebuilt box in blocks A-C (within 15%) and is higher in block D",
+     lambda: all(abs(v["real"] - v["model"]) <= 0.15 * v["model"] for k, v in g("C43")["by_block"].items() if k != "D")
+     and g("C43")["by_block"]["D"]["real"] > 1.3 * g("C43")["by_block"]["D"]["model"]),
 ]
 
 lines = [f"{'claim':6s} {'result':6s} {'source':22s} condition"]

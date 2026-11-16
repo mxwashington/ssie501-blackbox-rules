@@ -1,34 +1,98 @@
 {
  "C35": {
-  "correct": 16046,
-  "n": 16046
+  "correct": 48476,
+  "n": 48476,
+  "per_dataset": {
+   "H": {
+    "region1": [
+     16046,
+     16046
+    ],
+    "min_part": [
+     2616,
+     2616,
+     0
+    ],
+    "multiply": [
+     2346,
+     2346
+    ],
+    "swaps_in_order": [
+     2002,
+     2002
+    ]
+   },
+   "D": {
+    "region1": [
+     32400,
+     32400
+    ],
+    "min_part": [
+     5122,
+     5122,
+     0
+    ],
+    "multiply": [
+     5084,
+     5084
+    ],
+    "swaps_in_order": [
+     4022,
+     4022
+    ]
+   },
+   "G2": {
+    "region1": [
+     30,
+     30
+    ],
+    "min_part": [
+     13,
+     13,
+     0
+    ],
+    "multiply": [
+     9,
+     9
+    ],
+    "swaps_in_order": [
+     9,
+     9
+    ]
+   }
+  }
  },
  "C36": {
-  "agree_cellsteps": 4293166,
+  "agree_cellsteps": 13055350,
   "agree_jumps": 0,
-  "disagree_cellsteps": 106926,
-  "disagree_jumps": 1102,
-  "disagree_rate": 0.010306193068103174
+  "disagree_cellsteps": 312908,
+  "disagree_jumps": 3256,
+  "disagree_rate": 0.010405614429800453
  },
  "C37": {
-  "correct": 13851,
-  "n": 16046,
-  "loglik_per_change": -0.32988148808410106
+  "correct": 41888,
+  "n": 48476,
+  "loglik_per_change": -0.3267226733905426
  },
  "C38": {
-  "changes": 2616,
+  "changes": 7751,
   "rises": 0,
-  "partner_found": 2616
+  "partner_found": 7751
  },
  "C39": {
-  "changes": 2346,
-  "product_found": 2346
+  "changes": 7439,
+  "product_found": 7439
  },
  "C40": {
-  "swaps": 2002,
-  "total_gain_old": 2002,
-  "strict_old": 2001,
-  "strict_in_order": 2002
+  "swaps": 6033,
+  "total_gain_old": 6027,
+  "strict_old": 6024,
+  "strict_in_order": 6033
+ },
+ "C42": {
+  "transitions": 61,
+  "r1_changes": 47,
+  "r1_gate_ok": 47
  },
  "C41": {
   "table": {
@@ -77,5 +141,28 @@
     "real": 0.9946666666666666
    }
   }
+ },
+ "C43": {
+  "by_block": {
+   "A": {
+    "real": 10.868131868131869,
+    "model": 10.747252747252746
+   },
+   "B": {
+    "real": 10.780219780219781,
+    "model": 10.87912087912088
+   },
+   "C": {
+    "real": 12.835164835164836,
+    "model": 12.10989010989011
+   },
+   "D": {
+    "real": 26.032967032967033,
+    "model": 14.351648351648352
+   }
+  },
+  "busy_D_real": 24,
+  "busy_D_model": 9,
+  "n_runs": 91
  }
 }

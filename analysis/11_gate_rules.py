@@ -9,103 +9,57 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import numpy as np
-from blackbox.data import load_heldout
+from blackbox.data import load_heldout, load_discovery, load_group2
 from blackbox.regions import AREA
 from blackbox.report import Log
-from blackbox.gate_model import (GateModel, r1_target_grid, PT, FO, NB8, matches)
+from blackbox.gate_model import GateModel
+from blackbox.rule_checks import evaluate
 
 log = Log("11_gate_rules")
 runs = load_heldout()
-R1 = AREA == 1
 
-# Waiting-time rule from the earlier version of A5 (kept only to score it against the gates)
-LO = [0.36, 0.02, 0.04, 0.08, 0.09, 0.10]
-HI = [0.63, 0.06, 0.18, 0.26, 0.33, 0.39]
-
-
-def wait_rate(low, wait):
-    k = 0 if wait is None else 1 + min(int(wait // 50), 4)
-    return (LO if low else HI)[k]
-
-
-def gains(g, i, j):
-    vi, vj = g[i], g[j]
-    bi, bj = matches(g, i, vi), matches(g, j, vj)
-    h = g.copy()
-    h[i], h[j] = vj, vi
-    ai, aj = matches(h, i, vj), matches(h, j, vi)
-    return (ai + aj > bi + bj), (ai >= bi and aj >= bj and ai + aj > bi + bj)
-
-
-n_ev = gate_ok = wait_ok = 0
-ll_wait = 0.0
-settled = {"agree": [0, 0], "disagree": [0, 0]}
-pt = dict(changes=0, rises=0, partner_found=0)
-fo = dict(changes=0, product_found=0)
-sw = dict(swaps=0, total_gain_old=0, strict_old=0, strict_in_order=0)
-
-for h in runs:
-    last = np.full((20, 20), -1)
-    for t in range(len(h) - 1):
-        g0, g1 = h[t], h[t + 1]
-        ch = g0 != g1
-        T = r1_target_grid(g0)
-        # Region 1: settled cells
-        for r, c in np.argwhere(R1 & ((g0 == 4) | (g0 == 5))):
-            key = "agree" if T[r, c] == int(g0[r, c] >= 5) else "disagree"
-            settled[key][0] += 1
-            settled[key][1] += int(g1[r, c] != g0[r, c])
-        # Region 1: every change from 0-3 or 6-9
-        for r, c in np.argwhere(ch & R1):
-            v, w = int(g0[r, c]), int(g1[r, c])
-            if v not in (4, 5):
-                high = v >= 5
-                jump = w == (0 if high else 9)
-                n_ev += 1
-                gate_ok += int((T[r, c] != int(high)) == jump)
-                p = wait_rate(not high, None if last[r, c] < 0 else t - last[r, c])
-                ll_wait += np.log(p if jump else 1 - p)
-                wait_ok += int(jump == (p > 0.5))
-            last[r, c] = t
-        # Region 2
-        bottom = set(g0[10:20].ravel().tolist())
-        for r, c in np.argwhere(ch & PT):
-            pt["changes"] += 1
-            pt["rises"] += int(g1[r, c] > g0[r, c])
-            pt["partner_found"] += int(int(g1[r, c]) in bottom)
-        fov = g0[FO]
-        for r, c in np.argwhere(ch & FO):
-            fo["changes"] += 1
-            fo["product_found"] += int(any((int(g0[r, c]) * int(n)) % 10 == g1[r, c] for n in fov))
-        # Region 4
-        d4 = np.flatnonzero((ch & (AREA == 4)).ravel())
-        if len(d4) == 2:
-            i, j = d4
-            sw["swaps"] += 1
-            a, b = gains(g0.ravel(), i, j)
-            sw["total_gain_old"] += int(a)
-            sw["strict_old"] += int(b)
-            gs = g0.copy()
-            m = ch & (AREA != 4)
-            gs[m] = g1[m]                      # Regions 1-3 have already moved this step
-            sw["strict_in_order"] += int(gains(gs.ravel(), i, j)[1])
-
-log.claim("C35", f"Region 1 gates predict jump vs advance for {gate_ok} of {n_ev} held-out changes from 0-3 or 6-9",
-          correct=gate_ok, n=n_ev)
-na, ja = settled["agree"]
-nd, jd = settled["disagree"]
+DATASETS = {"H": runs}
+try:
+    DATASETS["D"] = load_discovery()
+except FileNotFoundError:
+    log("Group 1 discovery runs not in data/group1_runs/: tested on the held-out runs only")
+g2 = load_group2()
+if g2:
+    DATASETS["G2"] = g2
+RES = {k: evaluate(v) for k, v in DATASETS.items()}
+for k, r in RES.items():
+    log(f"[{k}] {len(DATASETS[k])} runs: Region 1 {r['gate_ok']}/{r['n_ev']}; settled agree {r['settled']['agree']}, "
+        f"disagree {r['settled']['disagree']}; min part {r['pt']}; multiply part {r['fo']}; swaps {r['sw']}")
+tot = lambda f: sum(f(r) for r in RES.values())
+n_ev, gate_ok, wait_ok = tot(lambda r: r["n_ev"]), tot(lambda r: r["gate_ok"]), tot(lambda r: r["wait_ok"])
+ll_wait = tot(lambda r: r["ll_wait"])
+na, ja = tot(lambda r: r["settled"]["agree"][0]), tot(lambda r: r["settled"]["agree"][1])
+nd, jd = tot(lambda r: r["settled"]["disagree"][0]), tot(lambda r: r["settled"]["disagree"][1])
+pt = {k: tot(lambda r, k=k: r["pt"][k]) for k in RES["H"]["pt"]}
+fo = {k: tot(lambda r, k=k: r["fo"][k]) for k in RES["H"]["fo"]}
+sw = {k: tot(lambda r, k=k: r["sw"][k]) for k in RES["H"]["sw"]}
+per = {k: dict(region1=[r["gate_ok"], r["n_ev"]], min_part=[r["pt"]["partner_found"], r["pt"]["changes"], r["pt"]["rises"]],
+               multiply=[r["fo"]["product_found"], r["fo"]["changes"]], swaps_in_order=[r["sw"]["strict_in_order"], r["sw"]["swaps"]])
+       for k, r in RES.items()}
+names = "+".join(DATASETS)
+log.claim("C35", f"Region 1 gates predict jump vs advance for {gate_ok} of {n_ev} changes from 0-3 or 6-9 ({names})",
+          correct=gate_ok, n=n_ev, per_dataset=per)
 log.claim("C36", f"Region 1 cells at 4 or 5: gate agrees -> {ja} jumps in {na} cell-steps; gate disagrees -> "
-          f"{jd} jumps in {nd} cell-steps ({jd / nd:.4f} per step; picking alone gives 0.0100)",
+          f"{jd} jumps in {nd} cell-steps ({jd / nd:.4f} per step; picking alone gives 0.0100) ({names})",
           agree_cellsteps=na, agree_jumps=ja, disagree_cellsteps=nd, disagree_jumps=jd, disagree_rate=jd / nd)
 log.claim("C37", f"Waiting-time rule (earlier A5) scored on the same changes: best guess right {wait_ok}/{n_ev} "
           f"({wait_ok / n_ev:.1%}); log-likelihood {ll_wait / n_ev:.3f} per change (gates: 0 errors)",
           correct=wait_ok, n=n_ev, loglik_per_change=ll_wait / n_ev)
 log.claim("C38", f"Region 2 minimum part: {pt['changes']} changes, {pt['rises']} rises, new value present in rows "
-          f"11-20 in {pt['partner_found']}", **pt)
+          f"11-20 in {pt['partner_found']} ({names})", **pt)
 log.claim("C39", f"Region 2 multiply part: {fo['changes']} changes, {fo['product_found']} equal (old x a value in "
-          f"that part) mod 10", **fo)
+          f"that part) mod 10 ({names})", **fo)
 log.claim("C40", f"Region 4: {sw['swaps']} swaps; strict rule holds for {sw['strict_old']} on the old grid and "
-          f"{sw['strict_in_order']} when Regions 1-3 move first; total-gain rule {sw['total_gain_old']}", **sw)
+          f"{sw['strict_in_order']} when Regions 1-3 move first; total-gain rule {sw['total_gain_old']} ({names})", **sw)
+if "D" in RES:
+    f = RES["D"]["first"]
+    log.claim("C42", f"First step after Reset (Group 1 runs start at the Reset grid): {f['transitions']} first steps, "
+              f"Region 1 gates right for {f['r1_gate_ok']} of {f['r1_changes']} Region 1 changes", **f)
 
 # Full model rebuilt from the 30 held-out starting grids, 5 seeds each
 AREA_FLAT = AREA.ravel()
@@ -137,4 +91,28 @@ for key, v in table.items():
     log(f"  {key:18s} model {v['model']:9.3f}   real {v['real']:9.3f}")
 log.claim("C41", "The Part A model, rebuilt from the 30 held-out starting grids, matches the held-out runs "
           "(table above)", table=table)
+
+# Where the rebuilt box and the real box still differ: late Region 1 activity, by block (all runs that start at Reset or step 1)
+BLOCKS = {"A": (slice(0, 5), slice(0, 5)), "B": (slice(0, 5), slice(5, 10)),
+          "C": (slice(0, 5), slice(10, 15)), "D": (slice(5, 10), slice(0, 5))}
+
+
+def late_by_block(trajs):
+    tot = {k: [] for k in BLOCKS}
+    for tr in trajs:
+        ch = tr[1001:] != tr[1000:-1]
+        for k, (a, b) in BLOCKS.items():
+            tot[k].append(int(ch[:, a, b].sum()))
+    return {k: np.array(v) for k, v in tot.items()}
+
+
+long_runs = [h for k in ("H", "D") if k in DATASETS for h in DATASETS[k]]
+real_b = late_by_block(long_runs)
+model_b = late_by_block([GateModel(h[0], seed=300 + k).run(len(h) - 1) for k, h in enumerate(long_runs)])
+blk = {k: dict(real=float(real_b[k].mean()), model=float(model_b[k].mean())) for k in BLOCKS}
+busy_real, busy_model = int((real_b["D"] > 40).sum()), int((model_b["D"] > 40).sum())
+log.claim("C43", "Late Region 1 activity (steps 1,001-2,000), changes per run by block, real vs rebuilt: "
+          + ", ".join(f"{k} {v['real']:.1f} vs {v['model']:.1f}" for k, v in blk.items())
+          + f"; runs with > 40 late block-D changes: real {busy_real}/{len(long_runs)}, rebuilt {busy_model}/{len(long_runs)}",
+          by_block=blk, busy_D_real=busy_real, busy_D_model=busy_model, n_runs=len(long_runs))
 log.save()
