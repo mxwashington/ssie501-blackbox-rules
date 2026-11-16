@@ -8,4 +8,7 @@ All three datasets record the 20×20 Black Box grid (`BlackBox_N.php`, numerical
 | `shared_dataset/` | Shared dataset compiled by W. Zhang (Selenium controller) | `trajectory_001_FULLBOX.npz` … `trajectory_030_FULLBOX.npz`; key `full_history` (2000, 20, 20), `recorded_steps` 1…2000 | **Held-out**: rules are only tested here |
 | `group2/` | SSIE 501 Group 2, `blackbox_collect.py` | `frames.csv`: one row per step (`step`, then 400 cell values in row-major order) | Small extra check |
 
-If the data files are not in this repository, ask the course group that shared them, or recollect them with any of the scrapers above, and place them in these folders with these names. `blackbox/data.py` checks that the frames are consecutive single steps.
+**Included in this repository:** `shared_dataset/` (the held-out runs, posted for the class by the instructor).
+**Not included yet:** `group1_runs/` and `group2/`. Every script loads the discovery runs, so `run_all.py` needs them in place first.
+
+To get the missing files, ask the course group that shared them, or recollect them with any of the scrapers above, and place them in these folders with these names. `blackbox/data.py` checks that the frames are consecutive single steps.

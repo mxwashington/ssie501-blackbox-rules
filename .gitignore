@@ -2,3 +2,7 @@ __pycache__/
 *.pyc
 .DS_Store
 .ipynb_checkpoints/
+
+# Data shared by other groups; not included until they agree
+data/group1_runs/
+data/group2/

@@ -52,7 +52,9 @@ Running `python run_all.py` reproduces everything in about 2 minutes. The [claim
 | **Held-out:** shared dataset compiled by W. Zhang | Used only to *test* the rules | 30 runs × 2,000 frames | Selenium browser controller (shared starter notebook); different starting grids from discovery |
 | **Group 2 frames** | Small extra check | 1 run × 41 frames | Python `requests` + `BeautifulSoup` (`blackbox_collect.py`) |
 
-All three record the grid after **every single step**, and the loader checks this (`blackbox/data.py`). None of the held-out starting grids appears in the discovery set (C04 counts 91 distinct starts in 91 resets). The datasets were shared by other SSIE 501 groups and are credited here; see [`data/README.md`](data/README.md).
+All three record the grid after **every single step**, and the loader checks this (`blackbox/data.py`). None of the held-out starting grids appears in the discovery set (C04 counts 91 distinct starts in 91 resets). The datasets were shared by other SSIE 501 groups and are credited here. The held-out shared dataset is included in this repository (it was posted for the class by the instructor); the Group 1 and Group 2 files are not yet included, so `run_all.py` needs them to be placed in `data/` first. See [`data/README.md`](data/README.md).
+
+Each section below starts with a **Data:** line saying which dataset each of its claims uses, and the [claim index](#claim-index) repeats this per claim.
 
 **Method.** For each area we (1) list which changes ever happen, (2) look for what decides them (old value, neighbours, position, time, the cell's history), (3) state the rule, (4) test the rule on the held-out runs, and (5) rebuild the whole box from the rules and compare it with the held-out runs.
 
@@ -62,6 +64,8 @@ The four areas are L-shapes of exactly 100 cells: the boundary moves 5 columns a
 
 ## 1. How the box updates: one random pick per area per step
 Code: [`analysis/01_selection.py`](analysis/01_selection.py) · Output: [`results/01_selection.txt`](results/01_selection.txt)
+
+Data: C01, C03, C05 use discovery runs; C02 uses all three datasets; C04 uses the starting grids of discovery + held-out runs.
 
 ![Change map](figures/01_change_map.png)
 
@@ -78,6 +82,8 @@ Because exactly one of 100 cells is picked per step, **P(change | picked) ≈ 10
 ## 2. Area 3: the picked cell is redrawn from a fixed distribution
 Code: [`analysis/02_area3_redraw.py`](analysis/02_area3_redraw.py) · Output: [`results/02_area3_redraw.txt`](results/02_area3_redraw.txt)
 
+Data: C06-C08 use discovery runs (finding); C09 compares discovery with held-out runs (testing); C10 uses discovery + held-out runs.
+
 ![Area 3 distribution](figures/02_area3_distribution.png)
 
 - **The new value does not depend on the old value.** The rows of the old→new transition table are nearly identical: P(→0) is 0.35-0.39, P(→1) is 0.32-0.37, P(→2) is 0.14-0.21 and P(→3) is 0.07-0.08 for every old value (C06).
@@ -90,6 +96,8 @@ Code: [`analysis/02_area3_redraw.py`](analysis/02_area3_redraw.py) · Output: [`
 
 ## 3. Area 4: swap only if it makes more same-value neighbours
 Code: [`analysis/03_area4_swaps.py`](analysis/03_area4_swaps.py) · Output: [`results/03_area4_swaps.txt`](results/03_area4_swaps.txt)
+
+Data: C11 and C12 use all three datasets; C13 uses held-out runs; C14 uses discovery and held-out runs separately; C15 fits on discovery and predicts held-out runs.
 
 ![Area 4](figures/03_area4_swaps.png)
 
@@ -104,6 +112,8 @@ Code: [`analysis/03_area4_swaps.py`](analysis/03_area4_swaps.py) · Output: [`re
 
 ## 4. Area 1: two one-way branches with random jumps
 Code: [`analysis/04_area1_branches.py`](analysis/04_area1_branches.py) · Output: [`results/04_area1_branches.txt`](results/04_area1_branches.txt)
+
+Data: C16 uses all three datasets; C17 uses held-out runs (its end-state shares use all 91 discovery + held-out runs); C18, C18b and C19 report discovery and held-out runs separately; C20 uses discovery runs.
 
 ![Area 1](figures/04_area1.png)
 
@@ -130,6 +140,8 @@ Code: [`analysis/04_area1_branches.py`](analysis/04_area1_branches.py) · Output
 ## 5. Area 2: 0 is a dead end; rises follow an odd/even rule
 Code: [`analysis/05_area2_parity.py`](analysis/05_area2_parity.py) · Output: [`results/05_area2_parity.txt`](results/05_area2_parity.txt)
 
+Data: C21 and C22 use all three datasets (the 'set of rises seen' comparison uses discovery runs); C23 and C25 use discovery runs; C24 reports discovery and held-out runs separately.
+
 ![Area 2](figures/05_area2_moves.png)
 
 - **0 never changes.** Changes away from 0: discovery 0, held-out 0, Group 2 0 (C21).
@@ -146,6 +158,8 @@ Code: [`analysis/05_area2_parity.py`](analysis/05_area2_parity.py) · Output: [`
 
 ## 6. Why entropy falls in some areas and not others
 Code: [`analysis/06_entropy.py`](analysis/06_entropy.py) · Output: [`results/06_entropy.txt`](results/06_entropy.txt)
+
+Data: C26 uses held-out runs; C27 compares them with the distribution fitted on discovery runs (C07).
 
 ![Entropy](figures/06_entropy_by_area.png)
 
@@ -164,6 +178,8 @@ Code: [`analysis/06_entropy.py`](analysis/06_entropy.py) · Output: [`results/06
 
 ## 7. Rebuilding the box from the rules
 Code: [`blackbox/simulator.py`](blackbox/simulator.py), [`analysis/07_simulate.py`](analysis/07_simulate.py) · Output: [`results/07_simulate.txt`](results/07_simulate.txt)
+
+Data: every probability in the simulator is fitted on discovery runs; it is started from, and compared with, the held-out runs only.
 
 The simulator implements the rules above. Its probabilities (Area 1 jump and exit rates, Area 2 change rates, Area 4 swap shares) are fitted on the **discovery** runs only. It is started from the 30 **held-out** starting grids and run for 2,000 steps.
 
@@ -191,39 +207,41 @@ The simulator implements the rules above. Its probabilities (Area 1 jump and exi
 
 ## Claim index
 
-| ID | Claim (short) | Code (search for the ID) | Output | Test |
-|---|---|---|---|---|
-| C01 | Four L-shaped areas of 100 cells, very different activity | `analysis/01_selection.py` | `results/01_selection.txt` | `check_claims.py` |
-| C02 | Areas 1-3 change ≤ 1 cell per step; Area 4 changes 0 or 2 | `analysis/01_selection.py` | `results/01_selection.txt` | `check_claims.py` |
-| C03 | Cells are picked at random, not top-to-bottom | `analysis/01_selection.py` | `results/01_selection.txt` | `check_claims.py` |
-| C04 | Reset gives a new random grid every time | `analysis/01_selection.py` | `results/01_selection.txt` | `check_claims.py` |
-| C05 | Change does not depend on matching neighbours | `analysis/01_selection.py` | `results/01_selection.txt` | `check_claims.py` |
-| C06 | Area 3 new value ignores the old value | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` | `check_claims.py` |
-| C07 | Area 3 draw distribution | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` | `check_claims.py` |
-| C08 | Area 3 new value ignores the neighbours | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` | `check_claims.py` |
-| C09 | Area 3 rule holds on held-out runs | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` | `check_claims.py` |
-| C10 | Values 10-13 only in Area 3, as the draw's tail | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` | `check_claims.py` |
-| C11 | Area 4 changes are exact swaps | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` | `check_claims.py` |
-| C12 | Every swap strictly increases same-value 8-neighbours | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` | `check_claims.py` |
-| C13 | No other of 12 definitions works | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` | `check_claims.py` |
-| C14 | Swap share rises with improvement size | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` | `check_claims.py` |
-| C15 | Area 4's slow-down predicted from its own grid | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` | `check_claims.py` |
-| C16 | Area 1 moves are only advance or jump | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
-| C17 | Non-4/5 cells always move; 4 and 5 near-dead ends | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
-| C18 | Jump rate depends on the cell's history | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
-| C18b | High branch jumps far more than low branch | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
-| C19 | Jump rate rises with time since last move | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
-| C20 | Neighbours do not decide jumps | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
-| C21 | Area 2: 0 never changes | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` | `check_claims.py` |
-| C22 | Area 2 rises follow the mod-10 rule exactly | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` | `check_claims.py` |
-| C23 | Area 2 drops are unrestricted | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` | `check_claims.py` |
-| C24 | Area 2 change probability by value | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` | `check_claims.py` |
-| C25 | Area 2: neighbours associated, no copying | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` | `check_claims.py` |
-| C26 | Entropy curves per area | `analysis/06_entropy.py` | `results/06_entropy.txt` | `check_claims.py` |
-| C27 | Each entropy curve follows from its rule | `analysis/06_entropy.py` | `results/06_entropy.txt` | `check_claims.py` |
-| C28 | Rebuilt box reproduces held-out runs | `analysis/07_simulate.py` | `results/07_simulate.txt` | `check_claims.py` |
-| C29 | Final states, real vs rebuilt | `analysis/07_simulate.py` | `results/07_simulate.txt` | `check_claims.py` |
-| C30 | Branch asymmetry explains Area 1's 4s | `analysis/07_simulate.py` | `results/07_simulate.txt` | `check_claims.py` |
+D = discovery (Group 1, 61 runs) · H = held-out (shared dataset, 30 runs) · G2 = Group 2 (41 frames)
+
+| ID | Claim (short) | Data | Code (search for the ID) | Output | Test |
+|---|---|---|---|---|---|
+| C01 | Four L-shaped areas of 100 cells, very different activity | D | `analysis/01_selection.py` | `results/01_selection.txt` | `check_claims.py` |
+| C02 | Areas 1-3 change ≤ 1 cell per step; Area 4 changes 0 or 2 | D, H, G2 | `analysis/01_selection.py` | `results/01_selection.txt` | `check_claims.py` |
+| C03 | Cells are picked at random, not top-to-bottom | D | `analysis/01_selection.py` | `results/01_selection.txt` | `check_claims.py` |
+| C04 | Reset gives a new random grid every time | D + H starts | `analysis/01_selection.py` | `results/01_selection.txt` | `check_claims.py` |
+| C05 | Change does not depend on matching neighbours | D | `analysis/01_selection.py` | `results/01_selection.txt` | `check_claims.py` |
+| C06 | Area 3 new value ignores the old value | D | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` | `check_claims.py` |
+| C07 | Area 3 draw distribution | D | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` | `check_claims.py` |
+| C08 | Area 3 new value ignores the neighbours | D | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` | `check_claims.py` |
+| C09 | Area 3 rule holds on held-out runs | D vs H | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` | `check_claims.py` |
+| C10 | Values 10-13 only in Area 3, as the draw's tail | D + H | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` | `check_claims.py` |
+| C11 | Area 4 changes are exact swaps | D, H, G2 | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` | `check_claims.py` |
+| C12 | Every swap strictly increases same-value 8-neighbours | D, H, G2 | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` | `check_claims.py` |
+| C13 | No other of 12 definitions works | H | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` | `check_claims.py` |
+| C14 | Swap share rises with improvement size | D and H | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` | `check_claims.py` |
+| C15 | Area 4's slow-down predicted from its own grid | fit D → test H | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` | `check_claims.py` |
+| C16 | Area 1 moves are only advance or jump | D, H, G2 | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
+| C17 | Non-4/5 cells always move; 4 and 5 near-dead ends | H (end state D + H) | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
+| C18 | Jump rate depends on the cell's history | D and H | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
+| C18b | High branch jumps far more than low branch | D and H | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
+| C19 | Jump rate rises with time since last move | D and H | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
+| C20 | Neighbours do not decide jumps | D | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` | `check_claims.py` |
+| C21 | Area 2: 0 never changes | D, H, G2 | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` | `check_claims.py` |
+| C22 | Area 2 rises follow the mod-10 rule exactly | D, H, G2 | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` | `check_claims.py` |
+| C23 | Area 2 drops are unrestricted | D | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` | `check_claims.py` |
+| C24 | Area 2 change probability by value | D and H | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` | `check_claims.py` |
+| C25 | Area 2: neighbours associated, no copying | D | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` | `check_claims.py` |
+| C26 | Entropy curves per area | H | `analysis/06_entropy.py` | `results/06_entropy.txt` | `check_claims.py` |
+| C27 | Each entropy curve follows from its rule | H vs D fit | `analysis/06_entropy.py` | `results/06_entropy.txt` | `check_claims.py` |
+| C28 | Rebuilt box reproduces held-out runs | fit D → test H | `analysis/07_simulate.py` | `results/07_simulate.txt` | `check_claims.py` |
+| C29 | Final states, real vs rebuilt | fit D → test H | `analysis/07_simulate.py` | `results/07_simulate.txt` | `check_claims.py` |
+| C30 | Branch asymmetry explains Area 1's 4s | fit D → test H | `analysis/07_simulate.py` | `results/07_simulate.txt` | `check_claims.py` |
 
 ## Reproduce
 
@@ -231,6 +249,18 @@ The simulator implements the rules above. Its probabilities (Area 1 jump and exi
 pip install -r requirements.txt
 python run_all.py          # runs analysis/01-07, then check_claims.py (about 2 minutes)
 ```
+
+## Team contributions
+
+> **To be completed.** This section is a placeholder. The exact contribution of each Group 5 member to Part 2 will be filled in accurately before final submission.
+
+| Member | Contribution to Part 2 |
+|---|---|
+| Kieenjal Davvey | *to be completed* |
+| Tanya Flash | *to be completed* |
+| Shamim Sharbaf | *to be completed* |
+| Lauren Reed | *to be completed* |
+| Marcus Washington | *to be completed* |
 
 ## Credits
 
