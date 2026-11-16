@@ -299,7 +299,6 @@ Every rule was found on one dataset and then tested on another that was never us
 | Marcus's runs | finding the Region 1 gates, the two parts of Region 2 and the strict Region 4 rule | 32 runs (21,720 steps) + 200 short runs (10,000 steps) | Marcus's own browser scripts, each recording checked so every "after" grid matched the next "before" |
 | **H** · Held-out: shared dataset (W. Zhang, posted for the class) | testing only | 30 runs × 2,000 recorded grids | Selenium browser controller from the shared starter notebook |
 | **G2** · Group 2 frames | extra check | 1 run × 40 steps | Python script `blackbox_collect.py` (`requests` + `BeautifulSoup`) |
-| Group 5 fresh runs | testing only (C44-C47, recording in progress) | 10 runs × 2,000 steps + 2 runs of 200 ten-step presses | `collect/recorder.js`, run inside the page on 16 November 2026 |
 
 **Which data each result uses.** D, H and G2 are the short names in the table above. Because the rules for Regions 1, 2 and 4 were found on Marcus's runs, D, H and G2 are all test data for them. The full list, claim by claim, is in [References](#references-where-every-claim-is-proven).
 
@@ -312,7 +311,7 @@ Every rule was found on one dataset and then tested on another that was never us
 | C43 (where the rebuilt box still differs) | D and H (91 runs of 2,000 steps) |
 
 - **The held-out shared dataset.** Wuyang Zhang, *Black Box Shared Dataset* (files `trajectory_001_FULLBOX.npz` to `trajectory_030_FULLBOX.npz`, dated 23 October 2026). Each file holds the full 20 × 20 grid after steps 1 to 2,000 (`full_history`), the step numbers (`recorded_steps`) and the Region 2 cells (`r2_history`). The copy in this repository (`data/shared_dataset/`) is identical to the posted zip, checked file by file.
-- **How the page numbers steps.** After Reset, the page labels the fresh grid "Current step: 1" (seen in every Group 5 recording). H's first recorded grid is also labelled step 1, so it is most likely the Reset grid itself. D starts at the Reset grid too, and its first step is tested in C42.
+- **How the page numbers steps.** After Reset, the page labels the fresh grid "Current step: 1". H's first recorded grid is also labelled step 1, so it is most likely the Reset grid itself. D starts at the Reset grid too, and its first step is tested in C42.
 - **Data not in this repository.** The Group 1 runs and Group 2's frames are not included until those groups agree to share them, and Marcus's runs are kept by Marcus. The scripts test them when they are placed in `data/` (see `data/README.md`); the numbers in this document were produced with all three present.
 - **Checks on the data.** Our loader refuses any file whose frames are not consecutive single steps. No held-out starting grid appears in the discovery set: 91 resets gave 91 different grids (C04).
 - **Only the visible grid.** The scripts read the grid exactly as the page shows it. The rules were inferred from those recorded grids, not from the page's program.
@@ -384,7 +383,7 @@ The Black Box is four rules sharing one screen, each built from a different idea
 
 ### B4. Limitations and open questions
 
-1. **Region 1's late activity, block D.** In steps 1,001-2,000 the real box and the rebuilt box agree in blocks A, B and C, but block D (rows 6-10, columns 1-5) changes 26.0 times per run in the real box against 14.4 in the rebuilt one, and stays busy (more than 40 late changes) in 24 of 91 real runs against 9 of 91 rebuilt ones (C43). Every recorded change still obeys the gates, the page picks Region 1 cells uniformly, and block D's outside inputs flip about as often as in the model, so the difference is in how often block D settles into a stable state. We have not found its cause; the fresh recordings retest it (C46).
+1. **Region 1's late activity, block D.** In steps 1,001-2,000 the real box and the rebuilt box agree in blocks A, B and C, but block D (rows 6-10, columns 1-5) changes 26.0 times per run in the real box against 14.4 in the rebuilt one, and stays busy (more than 40 late changes) in 24 of 91 real runs against 9 of 91 rebuilt ones (C43). Every recorded change still obeys the gates, the page picks Region 1 cells uniformly, and block D's outside inputs flip about as often as in the model, so the difference is in how often block D settles into a stable state. We have not found its cause.
 2. **Region 3's table is measured, not derived.** We found no simple formula that fits it as well as the table (C33).
 3. **Region 2 neighbour effect.** Drops to 0 are more likely next to 0s (C25). This is probably a side effect of zeros spreading through each part, which raises both the chance of a 0 partner and the number of 0 neighbours; we have not tested this directly.
 4. **Step size.** All data was recorded one step at a time; presses with n > 1 are assumed to equal n single steps.
@@ -469,13 +468,12 @@ All code, outputs and figures are in the public repository [sharbafshamim/ssie50
 | `blackbox/spec_model.py` | The earlier written model (C32) |
 | `analysis/spec_figures.py` | The two figures of this document (`figures/11_*.png`) |
 | `notebooks/rule_tests_three_datasets.ipynb` | C35-C43 with tables and figures, including the pick-rate map |
-| `collect/recorder.js` | Records the page from inside the browser (Group 5 fresh runs) |
 
 ### Sources
 
 **The Black Box**
 
-1. SSIE 501 Black Box assignment, numerical version, Binghamton University: https://casci.binghamton.edu/academics/ssie501/blackbox/BlackBox_N.php (recorded from 16 November 2026 for the Group 5 fresh runs). The colour version, `BlackBox.php`, runs the same engine.
+1. SSIE 501 Black Box assignment, numerical version, Binghamton University: https://casci.binghamton.edu/academics/ssie501/blackbox/BlackBox_N.php. The colour version, `BlackBox.php`, runs the same engine.
 
 **Data**
 
@@ -483,15 +481,14 @@ All code, outputs and figures are in the public repository [sharbafshamim/ssie50
 3. Wuyang Zhang, *Black Box Shared Dataset* (`trajectory_001_FULLBOX.npz` to `trajectory_030_FULLBOX.npz`, files dated 23 October 2026) and *Black Box Shared Starter Code*, posted for the class. Dataset H.
 4. SSIE 501 Group 2, `frames.csv` (41 grids) and collection script `blackbox_collect.py`. Dataset G2.
 5. Marcus Washington, own recordings: 32 runs (21,720 steps), 16-24 September 2026, and 200 short runs (10,000 steps), October 2026. Used to find the Region 1, 2 and 4 rules; not in this repository.
-6. Group 5, fresh runs recorded with `collect/recorder.js` on 16 November 2026 (in progress; claims C44-C47).
 
 **Group 5 work this document builds on**
 
-7. Marcus Washington, *SSIE 501 Black Box: A Proposed Simulator for Group 5*, 4 November 2026, and notebook `SSIE501_Blackbox_Simulator_Explained_v2.ipynb`: the Region 1 gates, the two Region 2 parts and the strict Region 4 rule.
-8. Group 5, *Black Box Part 1* presentation, 6 October 2026: the claims tested and corrected in B2 ("our Part 1 claim").
-9. Group 5 Electronic Laboratory Notebook (ELN), Black Box entries, September-November 2026, including the entropy study behind A2's Kruskal-Wallis result (p > 0.3).
+6. Marcus Washington, *SSIE 501 Black Box: A Proposed Simulator for Group 5*, 4 November 2026, and notebook `SSIE501_Blackbox_Simulator_Explained_v2.ipynb`: the Region 1 gates, the two Region 2 parts and the strict Region 4 rule.
+7. Group 5, *Black Box Part 1* presentation, 6 October 2026: the claims tested and corrected in B2 ("our Part 1 claim").
+8. Group 5 Electronic Laboratory Notebook (ELN), Black Box entries, September-November 2026, including the entropy study behind A2's Kruskal-Wallis result (p > 0.3).
 
 **Models the regions resemble (B3)**
 
-10. T. C. Schelling, "Dynamic models of segregation," *Journal of Mathematical Sociology* 1(2), 143-186, 1971. Region 4.
-11. S. A. Kauffman, "Metabolic stability and epigenesis in randomly constructed genetic nets," *Journal of Theoretical Biology* 22(3), 437-467, 1969. Region 1.
+9. T. C. Schelling, "Dynamic models of segregation," *Journal of Mathematical Sociology* 1(2), 143-186, 1971. Region 4.
+10. S. A. Kauffman, "Metabolic stability and epigenesis in randomly constructed genetic nets," *Journal of Theoretical Biology* 22(3), 437-467, 1969. Region 1.
