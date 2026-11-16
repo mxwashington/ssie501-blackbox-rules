@@ -23,7 +23,7 @@ Every finding in Sections 1-8 carries a tag such as **(C12)**. That tag appears 
 
 1. **The code that computes it.** Search the `analysis/` scripts for `"C12"`; each claim is one `log.claim("C12", ...)` call.
 2. **The output it printed.** Search `results/*.txt` for `[C12]`; the full numbers are in `results/metrics/*.json`.
-3. **An automatic test.** `check_claims.py` re-tests every claim from the saved numbers. The latest result is in [`results/claims_check.txt`](results/claims_check.txt): **42/42 pass.**
+3. **An automatic test.** `check_claims.py` re-tests every claim from the saved numbers. The latest result is in [`results/claims_check.txt`](results/claims_check.txt): **44/44 pass.**
 
 Running `python run_all.py` reproduces everything in about 2 minutes. The [claim index](#claim-index) at the end lists every claim with its code, output and test.
 
@@ -47,6 +47,8 @@ Running `python run_all.py` reproduces everything in about 2 minutes. The [claim
 ---
 
 ## Data and method
+
+**Short names used throughout:** **D** = discovery set, Group 1's 61 scraper runs · **H** = held-out set, W. Zhang's shared 30 runs · **G2** = Group 2's 40-step frames. D is where the earlier rules were found and H is where they were tested; the Area 1, 2 and 4 rules of Section 10 came from Marcus Washington's own runs, so D, H and G2 are all test data for them.
 
 | Dataset | Role | Size | How it was collected |
 |---|---|---|---|
@@ -227,18 +229,18 @@ The model specification ([MODEL_SPECIFICATION.md](MODEL_SPECIFICATION.md)) descr
 
 Items 1, 2 and 4 of the earlier list (Area 1 jump timing, Area 4 swap rate, same-step order) are answered in Section 10. What remains:
 
-1. **Area 1 late activity.** After step 1,000 the real box keeps a few more Area 1 cells moving than the rebuilt box (572 vs 540 changes per run over 2,000 steps, 1.6 standard errors; C41).
+1. **Area 1 late activity, block D.** After step 1,000 the real box and the rebuilt box agree in blocks A-C, but block D (rows 6-10, columns 1-5) stays busy in 24 of 91 real runs against 9 of 91 rebuilt ones (26.0 vs 14.4 late changes per run; C43). Every change still obeys the gates and picking is uniform, so the difference is in how often block D settles.
 2. **Area 2's link to zero-valued neighbours (C25).** Probably a side effect of zeros spreading through each part; not yet tested directly.
 3. **Area 3's table** is measured, not derived (C33).
 
 ## 10. Update: exact rules for Areas 1, 2 and 4
 Code: [`analysis/11_gate_rules.py`](analysis/11_gate_rules.py), [`blackbox/gate_model.py`](blackbox/gate_model.py) · Output: [`results/11_gate_rules.txt`](results/11_gate_rules.txt)
 
-These rules come from Marcus Washington's simulator (*SSIE 501 Black Box: A Proposed Simulator for Group 5*, 4 November 2026), built on his own recorded runs. They are tested here on all 30 held-out runs, none of which was used to build them. The full rules, including the 25 Area 1 gates, are in [MODEL_SPECIFICATION.md](MODEL_SPECIFICATION.md), Part A.
+These rules come from Marcus Washington's simulator (*SSIE 501 Black Box: A Proposed Simulator for Group 5*, 4 November 2026), built on his own recorded runs. They are tested here on every recorded change in D, H and G2, none of which was used to build them. The full rules, including the 25 Area 1 gates, are in [MODEL_SPECIFICATION.md](MODEL_SPECIFICATION.md), Part A.
 
-- **Area 1: logic gates decide every jump.** Each cell has a target half (LOW 0-4 or HIGH 5-9) set by a fixed logic gate over a few specific cells, some of them outside Area 1. A picked cell advances along its branch when the target matches its half, and jumps when it does not. The gates predict jump or advance for **16,046 of 16,046** held-out changes from 0-3 or 6-9 (C35). Cells at 4 or 5 never jumped while their gate agreed (0 in 4.29 million cell-steps) and jumped at 1.03% per step when it disagreed, the chance of being picked (C36). The waiting-time rule of Section 4, scored on the same changes, is right 86% of the time, mostly by always guessing "advance" (C37).
-- **Area 2: two parts.** In rows 1-10 × columns 16-20 the cell keeps the smaller of itself and a random cell of rows 11-20: 2,616 changes, 0 rises, every new value present in rows 11-20 (C38). In rows 6-10 × columns 6-15 it multiplies by a random cell of that part and keeps the last digit: all 2,346 changes fit (C39). The odd/even rise rule (C22) follows from the multiplication.
-- **Area 4: neither cell loses.** A swap happens only if neither cell ends with fewer same-value neighbours and at least one gains; pairs are redrawn until they hold different values. All 2,002 held-out swaps fit when Areas 1-3 move first in the step, and 2,001 when every area reads the old grid, so the areas update in order 1, 2, 3, 4 (C40).
+- **Area 1: logic gates decide every jump.** Each cell has a target half (LOW 0-4 or HIGH 5-9) set by a fixed logic gate over a few specific cells, some of them outside Area 1. A picked cell advances along its branch when the target matches its half, and jumps when it does not. The gates predict jump or advance for **48,476 of 48,476** changes from 0-3 or 6-9 (32,400 in D, 16,046 in H, 30 in G2; C35), including the first step after Reset (47 of 47; C42). Cells at 4 or 5 never jumped while their gate agreed (0 in 13.06 million cell-steps) and jumped at 1.04% per step when it disagreed, the chance of being picked (C36). The waiting-time rule of Section 4, scored on the same changes, is right 86% of the time, mostly by always guessing "advance" (C37).
+- **Area 2: two parts.** In rows 1-10 × columns 16-20 the cell keeps the smaller of itself and a random cell of rows 11-20: 7,751 changes, 0 rises, every new value present in rows 11-20 (C38). In rows 6-10 × columns 6-15 it multiplies by a random cell of that part and keeps the last digit: all 7,439 changes fit (C39). The odd/even rise rule (C22) follows from the multiplication.
+- **Area 4: neither cell loses.** A swap happens only if neither cell ends with fewer same-value neighbours and at least one gains; pairs are redrawn until they hold different values. All 6,033 recorded swaps fit when Areas 1-3 move first in the step, and 6,024 when every area reads the old grid, so the areas update in order 1, 2, 3, 4 (C40).
 - **Rebuilt box.** Started from the 30 held-out starting grids, the rebuilt box matches the cells changed per run (Area 1: 540 vs 572; Area 2: 165 vs 165; Area 3: 1,461 vs 1,461; Area 4: 132 vs 133) and the end-state entropy of all four areas within 0.01 bits (C41).
 
 ---
@@ -284,13 +286,15 @@ D = discovery (Group 1, 61 runs) · H = held-out (shared dataset, 30 runs) · G2
 | C32 | The written model reproduces held-out runs | fit D → test H | `analysis/08_model_spec.py`, `blackbox/spec_model.py` | `results/08_model_spec.txt` | `check_claims.py` |
 | C33 | Region 3 is not a textbook distribution | D (scored on H too) | `analysis/09_area3_family.py` | `results/09_area3_family.txt` | `check_claims.py` |
 | C34 | Worked examples obey the rules | H (run 1) | `analysis/10_worked_example.py` | `results/10_worked_example.txt` | `check_claims.py` |
-| C35 | Area 1 gates predict every held-out jump and advance | H | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
-| C36 | Settled Area 1 cells jump only when their gate disagrees | H | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
-| C37 | The waiting-time rule is worse than the gates | fit D → test H | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
-| C38 | Area 2 minimum part: never rises, new value from rows 11-20 | H | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
-| C39 | Area 2 multiply part: every change is a product mod 10 | H | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
-| C40 | Area 4 strict swap rule and update order | H | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
+| C35 | Area 1 gates predict every recorded jump and advance | D, H, G2 | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
+| C36 | Settled Area 1 cells jump only when their gate disagrees | D, H, G2 | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
+| C37 | The waiting-time rule is worse than the gates | rates fit on D; scored on D, H, G2 | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
+| C38 | Area 2 minimum part: never rises, new value from rows 11-20 | D, H, G2 | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
+| C39 | Area 2 multiply part: every change is a product mod 10 | D, H, G2 | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
+| C40 | Area 4 strict swap rule and update order | D, H, G2 | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
 | C41 | The current model reproduces the held-out runs | H | `analysis/11_gate_rules.py`, `blackbox/gate_model.py` | `results/11_gate_rules.txt` | `check_claims.py` |
+| C42 | The first step after Reset follows the Area 1 gates | D | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
+| C43 | Late Area 1 activity differs from the rebuilt box only in block D | D + H | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
 
 ## Reproduce
 

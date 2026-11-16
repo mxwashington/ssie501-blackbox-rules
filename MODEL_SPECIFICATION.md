@@ -57,7 +57,7 @@ The regions take turns in a fixed order, and each one sees the changes made earl
 4. **Region 4:** pick a pair of its cells (A4) and apply the Region 4 rule.
 5. The step counter goes up by 1.
 
-The order only matters for Region 4, whose neighbour counts can include border cells that Region 2 or 3 changed a moment earlier. With this order every held-out swap obeys the Region 4 rule; with all regions reading the old grid, one does not (C40).
+The order only matters for Region 4, whose neighbour counts can include border cells that Region 2 or 3 changed a moment earlier. With this order every one of the 6,033 recorded swaps (D, H and G2; see B1) obeys the Region 4 rule; with all regions reading the old grid, 9 do not, all of them next to a region border (C40).
 
 **Evidence that this is how picking works.**
 
@@ -117,7 +117,7 @@ Two cells trade values only when the trade helps at least one of them match its 
 **How sure we are.**
 
 - Every recorded swap raised the total number of matching neighbours: 4,022 of 4,022 in the discovery runs, 2,002 of 2,002 in the held-out runs and 9 of 9 in Group 2's frames (C12).
-- The stricter "neither cell loses" rule also held for all 2,002 held-out swaps (C40).
+- The stricter "neither cell loses" rule held for all **6,033** recorded swaps: 4,022 in D, 2,002 in H and 9 in G2 (C40).
 - With this rule and no swap probability, the rebuilt box makes 132 Region 4 changes per run against 133 in the real box (C41). The 54-96% "swap rates" in our earlier version (C14) were the swaps this rule rejects: ones that raise the total but cost one of the two cells a match.
 
 ### A5. Region 1 rule: counters steered by logic gates
@@ -193,8 +193,9 @@ Two cells trade values only when the trade helps at least one of them match its 
 **How sure we are.**
 
 - The two kinds of move are certain: 34,547 changes in the discovery runs and 17,148 in the held-out runs, with no other kind of change (C16).
-- The gates decide every jump. On the 30 held-out runs, which played no part in finding them, the gates predict jump or advance correctly for **16,046 of 16,046** changes from 0-3 or 6-9 (C35).
-- A cell sitting at 4 or 5 whose gate agrees with its half **never** jumped: 0 jumps in 4.29 million cell-steps. When its gate disagrees, it jumps 1.03% of the time per step, which is the 1-in-100 chance of being picked (C36).
+- The gates decide every jump. In all three datasets, none of which was used to find them, the gates predict jump or advance correctly for **48,476 of 48,476** changes from 0-3 or 6-9: 32,400 in D, 16,046 in H and 30 in G2 (C35).
+- That includes the very first step after Reset, which only Group 1's runs record: 47 of 47 Region 1 changes (C42).
+- A cell sitting at 4 or 5 whose gate agrees with its half **never** jumped: 0 jumps in 13.06 million cell-steps. When its gate disagrees, it jumps 1.04% of the time per step, which is the 1-in-100 chance of being picked (C36).
 
 ### A6. Region 2 rule: keep the smaller, or multiply and keep the last digit
 
@@ -214,10 +215,10 @@ So a cell here can only stay the same or go down, and the zeros of Region 3 drag
 
 **The odd/even rule follows from the multiplication.** Multiplying an even number always ends in an even digit, and multiplying 5 always ends in 0 or 5, so in the multiply part even values stay even and a 5 can never rise (C22, C23). This is the instructor's odd/even hint.
 
-**How sure we are (held-out runs, C38, C39).**
+**How sure we are (D, H and G2; C38, C39).**
 
-- Minimum part: **2,616** changes, **0** rises, and every new value was present somewhere in rows 11-20 at that step.
-- Multiply part: all **2,346** changes equal (old value × a value present in the multiply part) with the last digit kept.
+- Minimum part: **7,751** changes, **0** rises, and every new value was present somewhere in rows 11-20 at that step.
+- Multiply part: all **7,439** changes equal (old value × a value present in the multiply part) with the last digit kept.
 - With these two rules and no fitted probabilities, the rebuilt box makes 165 Region 2 changes per run, the same as the real box (C41).
 
 ### A7. Worked examples from a real run
@@ -282,7 +283,7 @@ A correct rebuild, run 2,000 steps from a random grid and averaged over many run
 | Region 1: share of cells that are 4 or 5 | 99% | 98% |
 | Region 2: share of cells that are 0 | 99% | 99% |
 
-All four regions match. The one gap is Region 1's late activity: the real box keeps a few more Region 1 cells moving after step 1,000. Over the whole run the difference (572 vs 540 changes) is 1.6 standard errors, so it may be chance (B4).
+All four regions match. The one gap is Region 1's late activity, and it sits in block D alone (C43, B4).
 
 ---
 
@@ -292,29 +293,33 @@ All four regions match. The one gap is Region 1's late activity: the real box ke
 
 Every rule was found on one dataset and then tested on another that was never used to find it. All datasets record the grid of the numerical page (`BlackBox_N.php`) after every single step, starting from Reset.
 
-| Dataset | Used for | Size | How it was collected |
+| Dataset (short name) | Used for | Size | How it was collected |
 |---|---|---|---|
-| Discovery: Group 1 scraper runs | finding the Region 2-4 structure and the Region 3 table | 61 runs × 2,000 steps | Python script (`requests` + `BeautifulSoup`): press Reset, press "Next n Step" with n = 1, read the 20 × 20 grid from the page, repeat |
+| **D** · Discovery: Group 1 scraper runs | finding the Region 2-4 structure and the Region 3 table | 61 runs × 2,000 steps | Python script (`requests` + `BeautifulSoup`): press Reset, press "Next n Step" with n = 1, read the 20 × 20 grid from the page, repeat |
 | Marcus's runs | finding the Region 1 gates, the two parts of Region 2 and the strict Region 4 rule | 32 runs (21,720 steps) + 200 short runs (10,000 steps) | Marcus's own browser scripts, each recording checked so every "after" grid matched the next "before" |
-| Held-out: shared dataset (W. Zhang, posted for the class) | testing only | 30 runs × 2,000 steps | Selenium browser controller from the shared starter notebook |
-| Group 2 frames | extra check | 1 run × 40 steps | Python script `blackbox_collect.py` (`requests` + `BeautifulSoup`) |
+| **H** · Held-out: shared dataset (W. Zhang, posted for the class) | testing only | 30 runs × 2,000 recorded grids | Selenium browser controller from the shared starter notebook |
+| **G2** · Group 2 frames | extra check | 1 run × 40 steps | Python script `blackbox_collect.py` (`requests` + `BeautifulSoup`) |
+| Group 5 fresh runs | testing only (C44-C47, recording in progress) | 10 runs × 2,000 steps + 2 runs of 200 ten-step presses | `collect/recorder.js`, run inside the page on 16 November 2026 |
 
-**Which data each result uses.**
+**Which data each result uses.** D, H and G2 are the short names in the table above. Because the rules for Regions 1, 2 and 4 were found on Marcus's runs, D, H and G2 are all test data for them. The full list, claim by claim, is in [References](#references-where-every-claim-is-proven).
 
 | Results | Data used |
 |---|---|
-| C01-C34 (selection, Region 3 table, Region 4 swaps, Region 1 branches, Region 2 rise rule, entropy) | Found on the Group 1 discovery runs; tested on the held-out shared dataset and, where stated, Group 2's frames |
-| C35-C41 (Region 1 gates, the two Region 2 parts, the strict Region 4 rule, update order, rebuilt model in A9) | Held-out shared dataset only: all 30 runs, 2,000 recorded steps each, every recorded change |
+| C01-C34 (selection, Region 3 table, earlier Region 4, 1 and 2 analysis, entropy) | Mostly found on D and tested on H; some use D, H and G2 together (see References) |
+| C35-C40 (Region 1 gates, settled cells, the two Region 2 parts, the strict Region 4 rule, update order) | D, H and G2: every recorded change |
+| C41 (rebuilt box, A9) | H: rebuilt from its 30 starting grids |
+| C42 (first step after Reset) | D only, the only data that include the Reset grid |
+| C43 (where the rebuilt box still differs) | D and H (91 runs of 2,000 steps) |
 
 - **The held-out shared dataset.** Wuyang Zhang, *Black Box Shared Dataset* (files `trajectory_001_FULLBOX.npz` to `trajectory_030_FULLBOX.npz`, dated 23 October 2026). Each file holds the full 20 × 20 grid after steps 1 to 2,000 (`full_history`), the step numbers (`recorded_steps`) and the Region 2 cells (`r2_history`). The copy in this repository (`data/shared_dataset/`) is identical to the posted zip, checked file by file.
-- **What the held-out data cannot test.** Its first recorded grid is the one after step 1, not the Reset grid, so the very first step after Reset is never tested in C35-C41.
-- **Data not in this repository.** The Group 1 runs and Group 2's frames are not included until those groups agree to share them, and Marcus's runs are kept by Marcus. The new rules (C35-C41) have not yet been tested on the Group 1 or Group 2 data.
+- **How the page numbers steps.** After Reset, the page labels the fresh grid "Current step: 1" (seen in every Group 5 recording). H's first recorded grid is also labelled step 1, so it is most likely the Reset grid itself. D starts at the Reset grid too, and its first step is tested in C42.
+- **Data not in this repository.** The Group 1 runs and Group 2's frames are not included until those groups agree to share them, and Marcus's runs are kept by Marcus. The scripts test them when they are placed in `data/` (see `data/README.md`); the numbers in this document were produced with all three present.
 - **Checks on the data.** Our loader refuses any file whose frames are not consecutive single steps. No held-out starting grid appears in the discovery set: 91 resets gave 91 different grids (C04).
 - **Only the visible grid.** The scripts read the grid exactly as the page shows it. The rules were inferred from those recorded grids, not from the page's program.
 - **One step = one press with n = 1.** Steps are numbered from Reset.
 - **AI tools.** AI assistants were used to write recording scripts, to search the recorded grids for candidate rules, and to run the tests. Every rule in Part A was kept only after it passed the held-out runs; Marcus also had a second, independent search start from scratch, and it reached the same rules.
 
-The analysis is a set of Python scripts in this repository, grouped by region. Each finding is printed with its claim tag and re-tested by `check_claims.py`; all 42 checks pass.
+The analysis is a set of Python scripts in this repository, grouped by region. Each finding is printed with its claim tag and re-tested by `check_claims.py`; all 44 checks pass.
 
 ### B2. How each rule was found: what we tested, rejected and kept
 
@@ -331,8 +336,8 @@ For every region we followed the same five steps. Each explanation below was kep
 | All | Cells update in a top-to-bottom, left-to-right sweep (our Part 1 claim) | How often the next change is the next cell in reading order | 1.02% (random picking gives about 1%) | **Rejected** (C03) |
 | All | One random cell per region per step (Region 4: one pair) | Cells changed per step; predicted vs observed change counts | Never more than 1 (or 2); counts within 0.2-0.5% | **Kept** (C02, C09, C17) |
 | All | Cells that match their neighbours stop changing (our Part 1 claim) | Change rate by number of matching neighbours | Flat: varies by at most 13 percentage points | **Rejected** (C05) |
-| All | All regions read the grid as it was at the start of the step | Region 4 swaps that obey its rule | 2,001 of 2,002 | **Rejected** (C40) |
-| All | Regions update in order 1, 2, 3, 4 | Region 4 swaps that obey its rule | 2,002 of 2,002 | **Kept** (C40) |
+| All | All regions read the grid as it was at the start of the step | Region 4 swaps that obey its rule (D, H, G2) | 6,024 of 6,033 | **Rejected** (C40) |
+| All | Regions update in order 1, 2, 3, 4 | Region 4 swaps that obey its rule (D, H, G2) | 6,033 of 6,033 | **Kept** (C40) |
 | 3 | The new value depends on the old value | Transition table rows | Rows nearly identical | **Rejected** (C06) |
 | 3 | The new value depends on the neighbours | P(new = 0) by number of zero neighbours | 0.31-0.33 throughout | **Rejected** (C08) |
 | 3 | Redraw from one fixed table | Held-out distribution and change count | χ² p = 0.97; count off by 0.2% | **Kept** (C09) |
@@ -341,17 +346,18 @@ For every region we followed the same five steps. Each explanation below was kep
 | 4 | Random swaps | Matching-neighbour gain of every swap | Every swap had gain ≥ 1, in all datasets | **Rejected** (C12) |
 | 4 | 11 other definitions of a "better" swap | Held-out swaps that break each definition | 126 to 828 exceptions each | **Rejected** (C13) |
 | 4 | Total gain ≥ 1, accepted with a measured probability | Needs a fitted rate table (0.54-0.96) | Replaced by the stricter rule below, which needs no rates | **Superseded** (C14) |
-| 4 | Neither cell loses and one gains, always accepted | Held-out swaps; rebuilt Region 4 activity | 2,002 of 2,002; 132 vs 133 changes per run | **Kept** (C40, C41) |
+| 4 | Neither cell loses and one gains, always accepted | Recorded swaps (D, H, G2); rebuilt Region 4 activity | 6,033 of 6,033; 132 vs 133 changes per run | **Kept** (C40, C41) |
 | 4 | Its slow-down is caused by Regions 1-2 (our Part 1 open question) | Predict the swap rate from Region 4's own grid only | Matches within 0.01 per step after step 200 | **Not needed** (C15) |
 | 1 | Any value can change into any other | All observed changes | Only advance or jump, no exceptions | **Kept: two branches** (C16) |
 | 1 | A neighbour decides whether a cell jumps | Jump rate by each of the 8 surrounding cells' direction and value | Always 10-24%, never near 0% or 100% | **Rejected** (C20) |
-| 1 | Jumps depend on the cell's own history (time since its last change) | Jump vs advance on held-out changes; log-likelihood | Best guess right 86% of the time, mostly by always guessing "advance" | **Rejected** (C18, C19, C37) |
-| 1 | Logic gates on specific cells decide the target half | Jump vs advance on held-out changes; settled cells | 16,046 of 16,046; 0 jumps in 4.29 million cell-steps while the gate agrees | **Kept** (C35, C36) |
+| 1 | Jumps depend on the cell's own history (time since its last change) | Jump vs advance on the same 48,476 changes; log-likelihood | Best guess right 86% of the time, mostly by always guessing "advance" | **Rejected** (C18, C19, C37) |
+| 1 | Logic gates on specific cells decide the target half | Jump vs advance on every recorded change (D, H, G2); settled cells; first step after Reset | 48,476 of 48,476; 0 jumps in 13.06 million cell-steps while the gate agrees; 47 of 47 | **Kept** (C35, C36, C42) |
 | 2 | 0 can change | Changes away from 0 | None, in all datasets | **Rejected: 0 is a dead end** (C21) |
 | 2 | A changing cell copies a neighbour | New value among own neighbours vs a random cell's | 77% vs 73% | **Rejected** (C25) |
 | 2 | Rises only to multiples of gcd(value, 10) (the instructor's odd/even hint) | Rises seen vs predicted; violations | Exact match; zero violations | **Kept, explained by the multiply part** (C22) |
-| 2 | Minimum part: min(cell, random cell of rows 11-20) | Held-out changes in rows 1-10, columns 16-20 | 0 rises; every new value present in rows 11-20 (2,616 of 2,616) | **Kept** (C38) |
-| 2 | Multiply part: (cell × random cell of the part) mod 10 | Held-out changes in rows 6-10, columns 6-15 | 2,346 of 2,346 | **Kept** (C39) |
+| 2 | Minimum part: min(cell, random cell of rows 11-20) | Changes in rows 1-10, columns 16-20 (D, H, G2) | 0 rises; every new value present in rows 11-20 (7,751 of 7,751) | **Kept** (C38) |
+| 2 | Multiply part: (cell × random cell of the part) mod 10 | Changes in rows 6-10, columns 6-15 (D, H, G2) | 7,439 of 7,439 | **Kept** (C39) |
+| 1 | The page picks some Region 1 cells more often than others | Pick rate of every Region 1 cell, from cells that must change when picked (D, H) | 0.90-1.16% per step for every cell, mean 1.00% | **Rejected** (notebook, Section 5) |
 
 **Why the two Region 1 explanations looked alike.** A cell's waiting time does carry information (C18, C19), but only indirectly. A cell sits still while its gate inputs stay put, and the inputs change only now and then, so the longer a cell has waited, the more likely its inputs have shifted. The neighbour test (C20) could not see the gates because the inputs are not the 8 surrounding cells: cell (1, 1) listens to cell (3, 1), two rows down, and some gates read cells in other regions.
 
@@ -364,9 +370,9 @@ The Black Box is four rules sharing one screen, each built from a different idea
 | Region | What it is | Why we believe it |
 |---|---|---|
 | 3 | A pure noise source: the picked cell is redrawn from a fixed table, with no memory and no neighbours. Its entropy settles at the table's own entropy, 2.14 bits, against 2.09 measured (C27). The values 10-13 are the table's uncapped tail, which is why they appear only here. | The held-out runs follow the same table (χ² p = 0.97), and the predicted number of changes is off by 0.2% (C09). |
-| 4 | A sorting process like Schelling's segregation model: two cells trade places only if neither ends up with fewer same-value neighbours and one gains. Counts never change, so its entropy is fixed at 3.26 bits. It slows down because acceptable swaps run out as clusters form. | Every one of 2,002 held-out swaps obeys the rule (C40). Its own grid predicts its slow-down (C15), and the rebuilt box matches its activity (C41). |
-| 1 | A Boolean network, like the random Boolean networks used to model gene regulation: each cell has a target half set by a logic gate over a few other cells, and moves one step at a time toward a 4 or a 5, jumping across when its target flips. It freezes when the network reaches a stable state; inputs from Region 3 keep nudging it. | The gates predict all 16,046 held-out jumps and advances, and settled cells never move while their gate agrees (C35, C36). |
-| 2 | Two arithmetic rules with 0 as a dead end: the minimum part copies small values from the bottom half, and the multiply part keeps the last digit of a product, so even numbers stay even and 5 never rises. | Every held-out change fits its part's rule (C38, C39), and the rebuilt box matches Region 2's activity and end state exactly (C41). |
+| 4 | A sorting process like Schelling's segregation model: two cells trade places only if neither ends up with fewer same-value neighbours and one gains. Counts never change, so its entropy is fixed at 3.26 bits. It slows down because acceptable swaps run out as clusters form. | Every one of the 6,033 recorded swaps obeys the rule (C40). Its own grid predicts its slow-down (C15), and the rebuilt box matches its activity (C41). |
+| 1 | A Boolean network, like the random Boolean networks used to model gene regulation: each cell has a target half set by a logic gate over a few other cells, and moves one step at a time toward a 4 or a 5, jumping across when its target flips. It freezes when the network reaches a stable state; inputs from Region 3 keep nudging it. | The gates predict all 48,476 recorded jumps and advances, including the first step after Reset, and settled cells never move while their gate agrees (C35, C36, C42). |
+| 2 | Two arithmetic rules with 0 as a dead end: the minimum part copies small values from the bottom half, and the multiply part keeps the last digit of a product, so even numbers stay even and 5 never rises. | Every recorded change fits its part's rule (C38, C39), and the rebuilt box matches Region 2's activity and end state exactly (C41). |
 
 **Why entropy falls in some regions and not others.** This was the instructor's question on Part 1 (C26, C27).
 
@@ -378,7 +384,7 @@ The Black Box is four rules sharing one screen, each built from a different idea
 
 ### B4. Limitations and open questions
 
-1. **Region 1's late activity.** After step 1,000 the real box keeps a few more Region 1 cells moving than the model does (64 vs 49 changes per run in steps 1,000-2,000). Over the whole run the gap (572 vs 540 changes) is 1.6 standard errors, so it may be chance. The gates themselves made no error on any recorded change, so if the gap is real it lies in how often the outside inputs flip, not in the gates.
+1. **Region 1's late activity, block D.** In steps 1,001-2,000 the real box and the rebuilt box agree in blocks A, B and C, but block D (rows 6-10, columns 1-5) changes 26.0 times per run in the real box against 14.4 in the rebuilt one, and stays busy (more than 40 late changes) in 24 of 91 real runs against 9 of 91 rebuilt ones (C43). Every recorded change still obeys the gates, the page picks Region 1 cells uniformly, and block D's outside inputs flip about as often as in the model, so the difference is in how often block D settles into a stable state. We have not found its cause; the fresh recordings retest it (C46).
 2. **Region 3's table is measured, not derived.** We found no simple formula that fits it as well as the table (C33).
 3. **Region 2 neighbour effect.** Drops to 0 are more likely next to 0s (C25). This is probably a side effect of zeros spreading through each part, which raises both the chance of a 0 partner and the number of 0 neighbours; we have not tested this directly.
 4. **Step size.** All data was recorded one step at a time; presses with n > 1 are assumed to equal n single steps.
@@ -401,21 +407,91 @@ The Black Box is four rules sharing one screen, each built from a different idea
 
 ## References: where every claim is proven
 
-To find a claim, search its tag (for example `C12`) in the script and in its output file. `python run_all.py` reruns everything, and [`results/claims_check.txt`](results/claims_check.txt) records the automatic test of every claim. [REPORT.md](REPORT.md) lists claims C01-C34 with their data, code, output and test.
+All code, outputs and figures are in the public repository [sharbafshamim/ssie501-blackbox-rules](https://github.com/sharbafshamim/ssie501-blackbox-rules). To check a claim, search its tag (for example `C12`) in the script listed below and in that script's output, `results/<script name>.txt`; the numbers are also saved in `results/metrics/<script name>.json`. `python run_all.py` reruns every script, and `results/claims_check.txt` records the automatic test of every claim (44 of 44 pass). The notebook `notebooks/rule_tests_three_datasets.ipynb` repeats the C35-C43 tests with tables and figures.
 
-| Claims | What they cover | Script | Printed output |
+**Data keys:** D = Group 1 scraper runs (61 runs) · H = shared held-out dataset, W. Zhang (30 runs) · G2 = Group 2 frames (40 steps). "Found on D, tested on H" means the rule was worked out from D and then checked on H, which played no part in finding it.
+
+### Every claim
+
+| Claim | What it shows | Data used | Script |
 |---|---|---|---|
-| C01-C05 | regions, random picking, starting grids, neighbour matching | `analysis/01_selection.py` | `results/01_selection.txt` |
-| C06-C10 | Region 3 rule and the values 10-13 | `analysis/02_area3_redraw.py` | `results/02_area3_redraw.txt` |
-| C11-C15 | Region 4 swaps, earlier swap rates, slow-down | `analysis/03_area4_swaps.py` | `results/03_area4_swaps.txt` |
-| C16-C20, C18b | Region 1 branches and waiting-time effect | `analysis/04_area1_branches.py` | `results/04_area1_branches.txt` |
-| C21-C25 | Region 2 dead end, rise rule, neighbour effect | `analysis/05_area2_parity.py` | `results/05_area2_parity.txt` |
-| C26-C27 | entropy by region | `analysis/06_entropy.py` | `results/06_entropy.txt` |
-| C28-C30 | earlier simulator vs held-out runs | `analysis/07_simulate.py` | `results/07_simulate.txt` |
-| C31-C32 | earlier written model vs held-out runs | `analysis/08_model_spec.py`, `blackbox/spec_model.py` | `results/08_model_spec.txt`, `results/model_tables.json` |
-| C33 | Region 3 against textbook distributions | `analysis/09_area3_family.py` | `results/09_area3_family.txt` |
-| C34 | worked examples in A7 | `analysis/10_worked_example.py` | `results/10_worked_example.txt` |
-| C35-C41 | Region 1 gates, Region 2 parts, strict Region 4 rule, update order, rebuilt model | `analysis/11_gate_rules.py`, `blackbox/gate_model.py` | `results/11_gate_rules.txt` |
-| Figures | the region map and the Region 1 diagram above | `analysis/spec_figures.py` | `figures/11_*.png` |
+| C01 | Four L-shaped regions of 100 cells | D | `analysis/01_selection.py` |
+| C02 | Regions 1-3 change at most 1 cell per step; Region 4 changes 0 or 2 | D, H, G2 | `analysis/01_selection.py` |
+| C03 | Cells are picked at random, not top-to-bottom | D | `analysis/01_selection.py` |
+| C04 | Reset gives a new random grid every time | starting grids of D and H | `analysis/01_selection.py` |
+| C05 | Change does not depend on matching neighbours | D | `analysis/01_selection.py` |
+| C06 | Region 3's new value ignores the old value | D | `analysis/02_area3_redraw.py` |
+| C07 | Region 3's draw distribution | D | `analysis/02_area3_redraw.py` |
+| C08 | Region 3's new value ignores the neighbours | D | `analysis/02_area3_redraw.py` |
+| C09 | Region 3's rule holds on held-out runs | found on D, tested on H | `analysis/02_area3_redraw.py` |
+| C10 | Values 10-13 appear only in Region 3, as the table's tail | D and H | `analysis/02_area3_redraw.py` |
+| C11 | Region 4 changes are exact swaps | D, H, G2 | `analysis/03_area4_swaps.py` |
+| C12 | Every swap raises the number of same-value neighbours | D, H, G2 | `analysis/03_area4_swaps.py` |
+| C13 | No other of 12 neighbour definitions works | H | `analysis/03_area4_swaps.py` |
+| C14 | Earlier swap rates by gain size (superseded by C40) | D and H | `analysis/03_area4_swaps.py` |
+| C15 | Region 4's slow-down follows from its own grid | found on D, tested on H | `analysis/03_area4_swaps.py` |
+| C16 | Region 1 moves are only advance or jump | D, H, G2 | `analysis/04_area1_branches.py` |
+| C17 | Cells holding 0-3 or 6-9 always move when picked; 4 and 5 are near-dead ends | H (end state from D and H) | `analysis/04_area1_branches.py` |
+| C18 | Region 1 jump rate depends on the cell's history (explained by the gates, B2) | D and H | `analysis/04_area1_branches.py` |
+| C18b | High branch jumps more often than low branch | D and H | `analysis/04_area1_branches.py` |
+| C19 | Jump rate rises with time since the last move | D and H | `analysis/04_area1_branches.py` |
+| C20 | The 8 surrounding cells do not decide jumps | D | `analysis/04_area1_branches.py` |
+| C21 | Region 2: 0 never changes | D, H, G2 | `analysis/05_area2_parity.py` |
+| C22 | Region 2 rises follow the mod-10 rule | D, H, G2 | `analysis/05_area2_parity.py` |
+| C23 | Region 2 drops are unrestricted | D | `analysis/05_area2_parity.py` |
+| C24 | Earlier Region 2 change probabilities (superseded by C38, C39) | D and H | `analysis/05_area2_parity.py` |
+| C25 | Region 2 drops to 0 more often next to 0s | D | `analysis/05_area2_parity.py` |
+| C26 | Entropy curves per region | H | `analysis/06_entropy.py` |
+| C27 | Each entropy curve follows from its rule | found on D, tested on H | `analysis/06_entropy.py` |
+| C28 | Earlier rebuilt box vs real runs | found on D, tested on H | `analysis/07_simulate.py` |
+| C29 | Earlier rebuilt box: final states | found on D, tested on H | `analysis/07_simulate.py` |
+| C30 | Branch asymmetry and Region 1's 4s (earlier model) | found on D, tested on H | `analysis/07_simulate.py` |
+| C31 | Earlier printed model tables | D | `analysis/08_model_spec.py` |
+| C32 | Earlier written model vs real runs | found on D, tested on H | `analysis/08_model_spec.py` |
+| C33 | Region 3 is not a textbook distribution | found on D, also scored on H | `analysis/09_area3_family.py` |
+| C34 | Worked examples in A7 obey the rules | H (run 1) | `analysis/10_worked_example.py` |
+| C35 | Region 1 gates predict every jump and advance (48,476 of 48,476) | D, H, G2 | `analysis/11_gate_rules.py` |
+| C36 | Settled Region 1 cells jump only when their gate disagrees | D, H, G2 | `analysis/11_gate_rules.py` |
+| C37 | The earlier waiting-time rule is worse than the gates (86% vs 100%) | rates found on D; scored on D, H, G2 | `analysis/11_gate_rules.py` |
+| C38 | Region 2 minimum part: never rises; new value comes from rows 11-20 | D, H, G2 | `analysis/11_gate_rules.py` |
+| C39 | Region 2 multiply part: every change is a product, last digit kept | D, H, G2 | `analysis/11_gate_rules.py` |
+| C40 | Region 4 strict swap rule (6,033 of 6,033) and update order 1-4 | D, H, G2 | `analysis/11_gate_rules.py` |
+| C41 | The rebuilt box (Part A) matches the real runs (A9) | H, rebuilt from its 30 starting grids | `analysis/11_gate_rules.py` |
+| C42 | The first step after Reset follows the gates (47 of 47) | D only (the only data that include the Reset grid) | `analysis/11_gate_rules.py` |
+| C43 | Late Region 1 activity differs from the rebuilt box only in block D | D and H (91 runs) | `analysis/11_gate_rules.py` |
 
-**Sources.** Discovery runs: SSIE 501 Group 1 (scraper notebook). Held-out runs: shared dataset compiled by W. Zhang and posted for the class. Extra frames: SSIE 501 Group 2 (`blackbox_collect.py`). Region 1 gates, Region 2 parts and strict Region 4 rule: Marcus Washington, *SSIE 501 Black Box: A Proposed Simulator for Group 5* (4 November 2026) and notebook `SSIE501_Blackbox_Simulator_Explained_v2.ipynb`. Analysis, model and write-up: Group 5.
+### Supporting code
+
+| File | What it is |
+|---|---|
+| `blackbox/gate_model.py` | Part A as code: the rebuilt box used in A9 and C41-C43 |
+| `blackbox/rule_checks.py` | The rule checks behind C35-C42, applied to every recorded change |
+| `blackbox/spec_model.py` | The earlier written model (C32) |
+| `analysis/spec_figures.py` | The two figures of this document (`figures/11_*.png`) |
+| `notebooks/rule_tests_three_datasets.ipynb` | C35-C43 with tables and figures, including the pick-rate map |
+| `collect/recorder.js` | Records the page from inside the browser (Group 5 fresh runs) |
+
+### Sources
+
+**The Black Box**
+
+1. SSIE 501 Black Box assignment, numerical version, Binghamton University: https://casci.binghamton.edu/academics/ssie501/blackbox/BlackBox_N.php (recorded from 16 November 2026 for the Group 5 fresh runs). The colour version, `BlackBox.php`, runs the same engine.
+
+**Data**
+
+2. SSIE 501 Group 1, Black Box scraper runs (`blackbox_runs.zip`: `run_00.npy` to `run_60.npy`, 61 runs × 2,001 grids) and notebook `blackboxN_scraper_analysis.ipynb`. Dataset D.
+3. Wuyang Zhang, *Black Box Shared Dataset* (`trajectory_001_FULLBOX.npz` to `trajectory_030_FULLBOX.npz`, files dated 23 October 2026) and *Black Box Shared Starter Code*, posted for the class. Dataset H.
+4. SSIE 501 Group 2, `frames.csv` (41 grids) and collection script `blackbox_collect.py`. Dataset G2.
+5. Marcus Washington, own recordings: 32 runs (21,720 steps), 16-24 September 2026, and 200 short runs (10,000 steps), October 2026. Used to find the Region 1, 2 and 4 rules; not in this repository.
+6. Group 5, fresh runs recorded with `collect/recorder.js` on 16 November 2026 (in progress; claims C44-C47).
+
+**Group 5 work this document builds on**
+
+7. Marcus Washington, *SSIE 501 Black Box: A Proposed Simulator for Group 5*, 4 November 2026, and notebook `SSIE501_Blackbox_Simulator_Explained_v2.ipynb`: the Region 1 gates, the two Region 2 parts and the strict Region 4 rule.
+8. Group 5, *Black Box Part 1* presentation, 6 October 2026: the claims tested and corrected in B2 ("our Part 1 claim").
+9. Group 5 Electronic Laboratory Notebook (ELN), Black Box entries, September-November 2026, including the entropy study behind A2's Kruskal-Wallis result (p > 0.3).
+
+**Models the regions resemble (B3)**
+
+10. T. C. Schelling, "Dynamic models of segregation," *Journal of Mathematical Sociology* 1(2), 143-186, 1971. Region 4.
+11. S. A. Kauffman, "Metabolic stability and epigenesis in randomly constructed genetic nets," *Journal of Theoretical Biology* 22(3), 437-467, 1969. Region 1.
