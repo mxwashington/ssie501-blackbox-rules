@@ -104,6 +104,21 @@ CHECKS = [
      and g("C34")["region1_jump"]["new"] in (0, 9)
      and g("C34")["region2_rise"]["new"] in {(g("C34")["region2_rise"]["old"] * k) % 10 for k in range(10)}
      and g("C34")["region4_swap"]["gain"] >= 1),
+    ("C35", "Region 1 gates predict jump vs advance for every held-out change from 0-3 or 6-9",
+     lambda: g("C35")["correct"] == g("C35")["n"] > 10000),
+    ("C36", "Region 1 cells at 4/5 never jump while their gate agrees; jump at about the pick rate (0.008-0.013) when it disagrees",
+     lambda: g("C36")["agree_jumps"] == 0 and 0.008 <= g("C36")["disagree_rate"] <= 0.013),
+    ("C37", "the waiting-time rule is clearly worse than the gates (best guess < 95% right)",
+     lambda: g("C37")["correct"] / g("C37")["n"] < 0.95),
+    ("C38", "Region 2 minimum part never rises, and every new value is present in rows 11-20",
+     lambda: g("C38")["rises"] == 0 and g("C38")["partner_found"] == g("C38")["changes"] > 1000),
+    ("C39", "every Region 2 multiply-part change equals (old x a value in that part) mod 10",
+     lambda: g("C39")["product_found"] == g("C39")["changes"] > 1000),
+    ("C40", "the strict Region 4 rule holds for every held-out swap when Regions 1-3 move first",
+     lambda: g("C40")["strict_in_order"] == g("C40")["swaps"] > 1000),
+    ("C41", "rebuilt model within 10% of the held-out runs on cells changed per region, and within 0.1 bits on end entropy",
+     lambda: all(abs(v["model"] - v["real"]) <= 0.10 * v["real"] for k, v in g("C41")["table"].items() if k.endswith("_changed"))
+     and all(abs(v["model"] - v["real"]) <= 0.1 for k, v in g("C41")["table"].items() if "entropy" in k)),
 ]
 
 lines = [f"{'claim':6s} {'result':6s} {'source':22s} condition"]

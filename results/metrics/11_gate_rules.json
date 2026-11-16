@@ -1,0 +1,81 @@
+{
+ "C35": {
+  "correct": 16046,
+  "n": 16046
+ },
+ "C36": {
+  "agree_cellsteps": 4293166,
+  "agree_jumps": 0,
+  "disagree_cellsteps": 106926,
+  "disagree_jumps": 1102,
+  "disagree_rate": 0.010306193068103174
+ },
+ "C37": {
+  "correct": 13851,
+  "n": 16046,
+  "loglik_per_change": -0.32988148808410106
+ },
+ "C38": {
+  "changes": 2616,
+  "rises": 0,
+  "partner_found": 2616
+ },
+ "C39": {
+  "changes": 2346,
+  "product_found": 2346
+ },
+ "C40": {
+  "swaps": 2002,
+  "total_gain_old": 2002,
+  "strict_old": 2001,
+  "strict_in_order": 2002
+ },
+ "C41": {
+  "table": {
+   "r1_changed": {
+    "model": 539.8266666666667,
+    "real": 571.6
+   },
+   "r2_changed": {
+    "model": 165.28666666666666,
+    "real": 165.4
+   },
+   "r3_changed": {
+    "model": 1461.2,
+    "real": 1460.7666666666667
+   },
+   "r4_changed": {
+    "model": 132.06666666666666,
+    "real": 133.46666666666667
+   },
+   "r1_entropy_end": {
+    "model": 0.7870704702635762,
+    "real": 0.7840760205816208
+   },
+   "r2_entropy_end": {
+    "model": 0.042405538500559656,
+    "real": 0.04174662386115251
+   },
+   "r3_entropy_end": {
+    "model": 2.092611037706361,
+    "real": 2.092565812018097
+   },
+   "r4_entropy_end": {
+    "model": 3.257302883097036,
+    "real": 3.2573028830970356
+   },
+   "r1_share4": {
+    "model": 0.7796666666666667,
+    "real": 0.795
+   },
+   "r1_share45": {
+    "model": 0.9907333333333335,
+    "real": 0.983
+   },
+   "r2_share0": {
+    "model": 0.9943333333333332,
+    "real": 0.9946666666666666
+   }
+  }
+ }
+}

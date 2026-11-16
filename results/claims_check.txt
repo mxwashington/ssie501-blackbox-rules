@@ -34,5 +34,12 @@ C31    PASS   08_model_spec          printed model tables: every Region 2 target
 C32    PASS   08_model_spec          the WRITTEN model: change counts within 10% for all regions; final entropy within 0.1 bits for Regions 2-4
 C33    PASS   09_area3_family        Region 3: the free table beats every standard family by > 10 AIC points; Poisson fits worst
 C34    PASS   10_worked_example      worked examples obey the written rules (Region 1 advance/jump, Region 2 allowed rise, Region 4 gain >= 1)
+C35    PASS   11_gate_rules          Region 1 gates predict jump vs advance for every held-out change from 0-3 or 6-9
+C36    PASS   11_gate_rules          Region 1 cells at 4/5 never jump while their gate agrees; jump at about the pick rate (0.008-0.013) when it disagrees
+C37    PASS   11_gate_rules          the waiting-time rule is clearly worse than the gates (best guess < 95% right)
+C38    PASS   11_gate_rules          Region 2 minimum part never rises, and every new value is present in rows 11-20
+C39    PASS   11_gate_rules          every Region 2 multiply-part change equals (old x a value in that part) mod 10
+C40    PASS   11_gate_rules          the strict Region 4 rule holds for every held-out swap when Regions 1-3 move first
+C41    PASS   11_gate_rules          rebuilt model within 10% of the held-out runs on cells changed per region, and within 0.1 bits on end entropy
 
-35/35 claims pass.
+42/42 claims pass.
