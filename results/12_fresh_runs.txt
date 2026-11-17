@@ -1,0 +1,5 @@
+Fresh runs: 10 single-step runs of 2000 steps, 2 runs of 10-step presses; recorded 2026-11-16T22:15:03.934Z to 2026-11-17T02:00:48.798Z (UTC)
+[C45] Fresh runs: Region 1 gates right for 5471/5471 changes, first step after Reset 8/8; settled cells jumped 0 times in 1415717 cell-steps while the gate agreed; Region 2 minimum part 830/830 (0 rises), multiply part 820/820; Region 4 683/683 swaps. The page labels the Reset grid 'Current step: [1]'
+[C46] 10-step presses (2 runs) vs single steps (10 runs): region entropies at 500/1000/2000 steps differ by at most 0.37 bits; at most 10 cells of one region changed in one press (10 steps allow 10); Region 4's value counts never changed: True
+[C47] Fresh runs, late Region 1 changes per run by block (real vs rebuilt from the same Reset grids, 5 runs each): A 9.2 vs 7.8, B 16.0 vs 11.4, C 12.0 vs 9.5, D 28.4 vs 15.1; runs with > 40 late block-D changes: real 3/10, rebuilt 6/50
+[C48] Values 10-13: 5509 of 15157100 Region 3 cell-steps after step 500 (0.00036); the Region 3 table predicts 0.00030; outside Region 3: 0

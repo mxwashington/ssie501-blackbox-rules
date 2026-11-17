@@ -1,0 +1,25 @@
+[H] 30 runs: Region 1 16046/16046; settled agree [4293166, 0], disagree [106926, 1102]; min part {'changes': 2616, 'rises': 0, 'partner_found': 2616}; multiply part {'changes': 2346, 'product_found': 2346}; swaps {'swaps': 2002, 'total_gain_old': 2002, 'strict_old': 2001, 'strict_in_order': 2002}
+[D] 61 runs: Region 1 32400/32400; settled agree [8761698, 0], disagree [205529, 2147]; min part {'changes': 5122, 'rises': 0, 'partner_found': 5122}; multiply part {'changes': 5084, 'product_found': 5084}; swaps {'swaps': 4022, 'total_gain_old': 4016, 'strict_old': 4014, 'strict_in_order': 4022}
+[G2] 1 runs: Region 1 30/30; settled agree [486, 0], disagree [453, 7]; min part {'changes': 13, 'rises': 0, 'partner_found': 13}; multiply part {'changes': 9, 'product_found': 9}; swaps {'swaps': 9, 'total_gain_old': 9, 'strict_old': 9, 'strict_in_order': 9}
+[C35] Region 1 gates predict jump vs advance for 48476 of 48476 changes from 0-3 or 6-9 (H+D+G2)
+[C36] Region 1 cells at 4 or 5: gate agrees -> 0 jumps in 13055350 cell-steps; gate disagrees -> 3256 jumps in 312908 cell-steps (0.0104 per step; picking alone gives 0.0100) (H+D+G2)
+[C37] Waiting-time rule (earlier A5) scored on the same changes: best guess right 41888/48476 (86.4%); log-likelihood -0.327 per change (gates: 0 errors)
+[C38] Region 2 minimum part: 7751 changes, 0 rises, new value present in rows 11-20 in 7751 (H+D+G2)
+[C39] Region 2 multiply part: 7439 changes, 7439 equal (old x a value in that part) mod 10 (H+D+G2)
+[C40] Region 4: 6033 swaps; strict rule holds for 6024 on the old grid and 6033 when Regions 1-3 move first; total-gain rule 6027 (H+D+G2)
+[C42] First step after Reset (Group 1 runs start at the Reset grid): 61 first steps, Region 1 gates right for 47 of 47 Region 1 changes
+Full model vs held-out runs (2,000 steps, means):
+  r1_changed         model   539.827   real   571.600
+  r2_changed         model   165.287   real   165.400
+  r3_changed         model  1461.200   real  1460.767
+  r4_changed         model   132.067   real   133.467
+  r1_entropy_end     model     0.787   real     0.784
+  r2_entropy_end     model     0.042   real     0.042
+  r3_entropy_end     model     2.093   real     2.093
+  r4_entropy_end     model     3.257   real     3.257
+  r1_share4          model     0.780   real     0.795
+  r1_share45         model     0.991   real     0.983
+  r2_share0          model     0.994   real     0.995
+[C41] The Part A model, rebuilt from the 30 held-out starting grids, matches the held-out runs (table above)
+[C43] Late Region 1 activity (steps 1,001-2,000), changes per run by block, real vs rebuilt: A 10.9 vs 10.7, B 10.8 vs 10.9, C 12.8 vs 12.1, D 26.0 vs 14.4; runs with > 40 late block-D changes: real 24/91, rebuilt 9/91
+[C44] Deductions: a Region 3 redraw repeats the old value with chance 0.276 (so the region changes in 72.4% of steps) and its entropy settles at 2.14 bits; a Region 1 block with outside inputs p, q, c all LOW has exactly 4 stable states, with [1, 2, 6, 9] of 25 cells HIGH (all 2^25 states checked); other input settings give 001: [9, 10, 12]; 010: [1, 2, 6, 9]; 011: [9, 10, 12]; 100: [1, 2, 6, 9]; 101: [10, 11, 13]; 110: [9, 10, 12]; 111: [11, 12, 14]
