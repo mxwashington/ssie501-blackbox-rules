@@ -124,6 +124,8 @@ CHECKS = [
     ("C43", "late Region 1 activity matches the rebuilt box in blocks A-C (within 15%) and is higher in block D",
      lambda: all(abs(v["real"] - v["model"]) <= 0.15 * v["model"] for k, v in g("C43")["by_block"].items() if k != "D")
      and g("C43")["by_block"]["D"]["real"] > 1.3 * g("C43")["by_block"]["D"]["model"]),
+    ("C44", "deductions: Region 3 repeat chance about 0.28 and table entropy about 2.14 bits; Region 1 block with LOW inputs has stable states with 1, 2, 6 and 9 HIGH cells",
+     lambda: abs(g("C44")["r3_same"] - 0.276) < 0.01 and abs(g("C44")["r3_entropy"] - 2.14) < 0.02 and g("C44")["r1_stable_states"]["000"] == [1, 2, 6, 9]),
 ]
 
 lines = [f"{'claim':6s} {'result':6s} {'source':22s} condition"]

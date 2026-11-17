@@ -15,6 +15,8 @@ You can rebuild the model with a spreadsheet, a program in any language, or grap
 
 Every finding carries a claim tag such as (C12). The tag points to the script that computes it, the output it printed and an automatic test, all in this repository (see [References](#references-where-every-claim-is-proven)). The code is the evidence; this document is the model.
 
+**How this work follows the course framework.** We followed Herbert Simon's logic of discovery, which keeps finding a pattern separate from testing whether it predicts new data (Simon, quoted on the assignment slide, SSIE 501 lecture 13): every rule was found on one set of recordings and tested on recordings never used to find it (B1). In George Klir's terms, building the model meant climbing his hierarchy of systems for model inference (Klir 2001): choosing the variables (400 cells, values 0-13, one step at a time), harvesting data (the recorded runs), relating each cell's next value to the few cells that decide it, and relating the four regions to one another. Climbing up by induction gives predictions, which we tested (B2, A9); coming back down by deduction gives understanding, which B3 provides. The decomposition into local rules is not optional: the grid has 10^400 possible states, far beyond Bremermann's physical limit of computation (about 10^93 bits), so no model that treats the box as one giant lookup table could ever be built or checked (Bremermann 1962; lecture 14). Like the biologist in Lazebnik's "Can a Biologist Fix a Radio?" (Lazebnik 2002, our group's discussion paper), we had only the box's behaviour to go on, and reconstructed its wiring from that.
+
 ---
 
 ## Part A. The model
@@ -40,6 +42,8 @@ Region 2 has two parts that follow different rules:
 ![Region map: blocks A-D of Region 1, the two parts of Region 2, and the 12 outside cells the Region 1 gates read](figures/11_region_map.png)
 
 **What a cell holds.** Each cell stores only its current value. Nothing is hidden: the next step depends only on the grid you can see and on chance.
+
+**Things and relations.** In Klir's definition a system is a set of things together with relations among them, S = (T, R), and the same relation can be applied to different sets of things (Klir 2001; lecture 10). Here the things are the 400 cells and the relations are the four rules. Region 1 shows the distinction clearly: the same 25 gate formulas (one relation) are applied to four different blocks of cells (four sets of things), and block C even reads block A's cells.
 
 **The starting grid.** Reset fills every cell with a random digit 0-9, each digit about equally likely (9.6% to 10.3% of cells each, C04). Every Reset gives a different grid.
 
@@ -92,6 +96,8 @@ The new value can equal the old one, so a picked cell stays the same about 28% o
 
 **A short way to remember it.** 0 about 36% of the time; otherwise 1 or more, where each value is about 0.47 times as likely as the one below it. This is the closest simple description we found, but the measured table fits clearly better, so the model uses the table (C33).
 
+This choice is an instance of the trade-off between descriptive and uncertainty-based complexity (Klir 2001; lecture 13): a one-line formula is a shorter description but leaves more uncertainty about the data, while the 12-row table is a longer description that leaves less. Here the extra description is worth it: the table fits better by 128 AIC points (C33). The table's own Shannon entropy, 2.14 bits (Shannon 1948), is the value Region 3's entropy settles at (B3).
+
 **The values 10-13.**
 
 - The table has no upper limit at 9, so very rarely it produces 10 or more. These are the "out of bounds" values Dr. Costa called a glitch.
@@ -102,6 +108,8 @@ The new value can equal the old one, so a picked cell stays the same about 28% o
 ### A4. Region 4 rule: swap only if neither cell loses matching neighbours
 
 Two cells trade values only when the trade helps at least one of them match its neighbours and hurts neither. Values are never created or destroyed (C11, C12).
+
+This is the same kind of rule as Schelling's segregation model, in which agents move only when the move leaves them among more of their own kind (Schelling 1971). It is also a simple case of what Ashby called a self-organizing system: one that moves on its own toward states that are stable under its rule, here clusters of equal values (Ashby 1962).
 
 1. **Pick the pair.** Pick two cells of Region 4 at random. If they are the same cell, or hold the same value, throw the pick away and pick again, until you have two different cells A and B holding different values a and b. (If all 100 cells hold the same value, skip Region 4 this step.)
 2. **Count before.** Count how many of A's 8 surrounding cells hold a (call it A-before), and how many of B's 8 surrounding cells hold b (B-before).
@@ -184,6 +192,8 @@ Two cells trade values only when the trade helps at least one of them match its 
 
 **Example.** Cell (1, 1) is position (1, 1) of block A, so its target is HIGH when cell (3, 1) is LOW. Say (1, 1) holds 2. If (3, 1) holds 7, the target is LOW, so (1, 1) advances to 3. If (3, 1) holds 1, the target is HIGH, so (1, 1) jumps to 9. Cell (1, 11) is position (1, 1) of block C, whose source is block A, so it also listens to cell (3, 1).
 
+**What kind of system this is.** Region 1 is a Boolean network: each cell has a two-valued target (HIGH or LOW) computed by a fixed logical function of a few other cells, the class of systems Kauffman used to model gene regulation (Kauffman 1969, 1984). In Klir's terms, each gate's list of input cells is the rule's *mask*: the cells whose current values, and only those, decide the next value (Klir 2001; lectures 11 and 13). Finding the masks was the hard part: they are not the 8 surrounding cells (C20), and three of them reach outside the region.
+
 **Why it freezes, and why mostly at 4.**
 
 - A 4 or a 5 whose gate agrees with its half never moves, so the region settles: by the last recorded step, 98-99% of its cells are 4 or 5 (C17, C41).
@@ -260,7 +270,7 @@ What each update needs:
 | 2, multiply part | the picked cell and one random cell of its own part | 2 cells |
 | 4 | two cells and the 8 neighbours of each | a block with room for pairs and their neighbours |
 
-- **The regions are coupled.** Region 1 reads cells in Regions 2, 3 and 4 (A5); Region 2's minimum part reads rows 11-20 (Regions 3 and 4); Region 4 counts neighbours across borders. Region 3 reads nothing, so it is the box's only source of fresh randomness, and its noise reaches Region 1 and Region 2.
+- **The regions are coupled, but only weakly.** This is what Simon called near-decomposability: strong interactions inside each part and weak ones between parts, which is what makes a complex system possible to study part by part (Simon 1962; lecture 11). Region 1 reads cells in Regions 2, 3 and 4 (A5); Region 2's minimum part reads rows 11-20 (Regions 3 and 4); Region 4 counts neighbours across borders. Region 3 reads nothing, so it is the box's only source of fresh randomness, and its noise reaches Region 1 and Region 2.
 - **Region 1 cannot be shrunk freely.** Its gates name specific positions, so it is a fixed 25-cell network, repeated in four blocks. A smaller box can keep one block and its outside inputs; a different-sized network would be a different rule.
 - **Time depends on region size.** With 100 cells, each cell is picked on average once every 100 steps. A region of N cells picks each cell once every N steps, so it settles N/100 times as fast. Keep the regions the same size (or keep the ratio) so their speeds stay in step, as Lauren noted in the group chat.
 - These are consequences of the rules; we could not test other sizes, because the real box has only one.
@@ -283,7 +293,9 @@ A correct rebuild, run 2,000 steps from a random grid and averaged over many run
 | Region 1: share of cells that are 4 or 5 | 99% | 98% |
 | Region 2: share of cells that are 0 | 99% | 99% |
 
-All four regions match. The one gap is Region 1's late activity, and it sits in block D alone (C43, B4).
+All four regions match. The one gap is Region 1's late activity, and it sits in block D alone (C43, B5).
+
+This is the test of a model in the Hertzian sense used in class: a model earns trust when its logical consequences, here a rebuilt box started from the real starting grids, match fresh measurements of the world (Rosenblueth and Wiener 1945; lecture 11). The rebuilt box is in that sense a small digital twin of the page: a transparent copy of its mechanism that responds as the original does from the same starting point (De Domenico et al. 2025; lecture 14).
 
 ---
 
@@ -292,6 +304,8 @@ All four regions match. The one gap is Region 1's late activity, and it sits in 
 ### B1. Data: what we recorded and how
 
 Every rule was found on one dataset and then tested on another that was never used to find it. All datasets record the grid of the numerical page (`BlackBox_N.php`) after every single step, starting from Reset.
+
+This is the separation Simon draws between the discovery of a law, which finds a pattern in data, and its testing, which checks the law's predictions against data observed afterwards (Simon, assignment slide, lecture 13). Here discovery happened on D for the earlier rules and on Marcus's runs for the Region 1, 2 and 4 rules; testing happened on data those discoveries never saw.
 
 | Dataset (short name) | Used for | Size | How it was collected |
 |---|---|---|---|
@@ -309,6 +323,7 @@ Every rule was found on one dataset and then tested on another that was never us
 | C41 (rebuilt box, A9) | H: rebuilt from its 30 starting grids |
 | C42 (first step after Reset) | D only, the only data that include the Reset grid |
 | C43 (where the rebuilt box still differs) | D and H (91 runs of 2,000 steps) |
+| C44 (deductions, B3) | no data: worked out from the rules alone |
 
 - **The held-out shared dataset.** Wuyang Zhang, *Black Box Shared Dataset* (files `trajectory_001_FULLBOX.npz` to `trajectory_030_FULLBOX.npz`, dated 23 October 2026). Each file holds the full 20 × 20 grid after steps 1 to 2,000 (`full_history`), the step numbers (`recorded_steps`) and the Region 2 cells (`r2_history`). The copy in this repository (`data/shared_dataset/`) is identical to the posted zip, checked file by file.
 - **How the page numbers steps.** After Reset, the page labels the fresh grid "Current step: 1". H's first recorded grid is also labelled step 1, so it is most likely the Reset grid itself. D starts at the Reset grid too, and its first step is tested in C42.
@@ -318,11 +333,13 @@ Every rule was found on one dataset and then tested on another that was never us
 - **One step = one press with n = 1.** Steps are numbered from Reset.
 - **AI tools.** AI assistants were used to write recording scripts, to search the recorded grids for candidate rules, and to run the tests. Every rule in Part A was kept only after it passed the held-out runs; Marcus also had a second, independent search start from scratch, and it reached the same rules.
 
-The analysis is a set of Python scripts in this repository, grouped by region. Each finding is printed with its claim tag and re-tested by `check_claims.py`; all 44 checks pass.
+The analysis is a set of Python scripts in this repository, grouped by region. Each finding is printed with its claim tag and re-tested by `check_claims.py`; all 45 checks pass.
 
 ### B2. How each rule was found: what we tested, rejected and kept
 
 For every region we followed the same five steps. Each explanation below was kept only if it survived the held-out runs.
+
+These five steps follow Klir's hierarchy of systems for model inference (Klir 2001; lectures 11 and 13): step 1 builds the *data system*, steps 2 and 3 find the *generative system* (which cells decide each change, and how), step 4 tests it by induction and prediction, and step 5 joins the regions into one *structure system* and checks the whole.
 
 1. List every change that ever happens in the region (old value → new value, how many cells per step).
 2. Look for what decides each change: the old value, the neighbours, other cells, the position, the time since Reset, the cell's own history.
@@ -362,9 +379,24 @@ For every region we followed the same five steps. Each explanation below was kep
 
 **Two independent analyses agree.** Marcus's analysis of his own runs and ours of the Group 1 runs reached the same two Region 1 branches, the same Region 4 swap structure and the same Region 3 numbers (0 about 36%, 1 about 33%, 2 about 17%, 3 about 7%).
 
-### B3. Conclusions: what the box is and why we believe it
+**Choosing between models.** Several decisions in the table are the trade-off between descriptive and uncertainty-based complexity (Klir 2001; lecture 13). For Region 1, the waiting-time rule is a short description that leaves much uncertainty (86% of changes predicted, C37), while the 25 gates are a longer description that leaves none (100%, C35). For Region 2, two one-line rules replaced a 10 × 10 table of fitted probabilities: shorter *and* exact (C38, C39). For Region 3, the measured table beats any short formula (C33).
+
+### B3. What the rules imply: deductions
+
+Sections A3-A6 were found by induction from data. The assignment also asks us to analyze, by deduction, how this algorithm behaves (lecture 13): to reason from the rules alone to what the box must do, and then check those consequences. In the course's terms, induction gives prediction and deduction gives understanding (lecture 13). Each result below follows from Part A without looking at the data (C44).
+
+- **Region 3 changes in about 72% of steps, and its entropy settles at 2.14 bits.** A redraw ignores the old value, so once the region has been redrawn many times each cell's value follows the table, and a redraw repeats the old value with chance equal to the sum of the squared table probabilities, 0.276 (C44). The region should therefore change in 72.4% of steps, with the table's own Shannon entropy, 2.14 bits. Measured: about 73% (C09) and 2.09 bits (C27).
+- **Region 4 must freeze.** A swap only moves values, so the count of each value never changes, and the region's entropy stays at its starting value, 3.26 bits. Every accepted swap raises the total number of matching neighbours, and that total cannot exceed 8 per cell, so only a limited number of swaps can ever happen. The total works like an energy function that only moves one way, and the slow-down (C15) follows from it without any link to Regions 1 and 2.
+- **Region 2 must end as zeros.** The smaller of 0 and anything is 0, and 0 times anything is 0, so a 0 can never leave Region 2. The minimum part becomes 0 whenever its partner from rows 11-20 holds 0, which Region 3 keeps true for about 36% of its cells. In the multiply part, 0s spread by multiplication, and an even number times 5 also gives 0. The only way to avoid 0 forever would be a multiply part made only of 1s, 3s, 7s and 9s, whose products never give 0, 5 or an even digit; a random starting grid essentially never has that. Measured: 99% zeros by step 2,000 (C41).
+- **Region 1 must freeze into one of a few stable states, mostly 4s.** A 4 or a 5 moves only when its gate points to the other half, so the region is frozen exactly when every gate agrees with its cell's half: a stable state of the Boolean network. Late in a run Region 2 is all zeros and Region 3 is mostly low, so the outside inputs p, q and c are mostly LOW. Checking all 2²⁵ (about 33.5 million) states of a block with those inputs LOW gives exactly **four stable states**, with 1, 2, 6 or 9 of its 25 cells HIGH (C44). Each block must therefore freeze mostly as 4s, with 4% to 36% of its cells at 5, and which stable state a run reaches depends on its history. This explains both the majority of 4s and why runs end with different mixes. Measured: about 80% 4s (C41).
+
+Together these show that the model's behaviour is understood, not only fitted: three regions must freeze, and one must keep changing, for reasons that follow from the rules themselves.
+
+### B4. Conclusions: what the box is and why we believe it
 
 The Black Box is four rules sharing one screen, each built from a different idea: a random redraw, a sorting rule, a network of logic gates, and a pair of arithmetic rules that trap zeros. Only Region 3 creates fresh randomness; the other regions add chance only through which cells they pick.
+
+General systems theory looks for the same organization across different fields, classes of systems that are alike regardless of what their parts are made of (Klir 2001; lectures 10 and 11). The Black Box fits this view: Region 4 belongs to the same class as Schelling's segregation model, and Region 1 to the same class as Kauffman's Boolean networks.
 
 | Region | What it is | Why we believe it |
 |---|---|---|
@@ -373,7 +405,7 @@ The Black Box is four rules sharing one screen, each built from a different idea
 | 1 | A Boolean network, like the random Boolean networks used to model gene regulation: each cell has a target half set by a logic gate over a few other cells, and moves one step at a time toward a 4 or a 5, jumping across when its target flips. It freezes when the network reaches a stable state; inputs from Region 3 keep nudging it. | The gates predict all 48,476 recorded jumps and advances, including the first step after Reset, and settled cells never move while their gate agrees (C35, C36, C42). |
 | 2 | Two arithmetic rules with 0 as a dead end: the minimum part copies small values from the bottom half, and the multiply part keeps the last digit of a product, so even numbers stay even and 5 never rises. | Every recorded change fits its part's rule (C38, C39), and the rebuilt box matches Region 2's activity and end state exactly (C41). |
 
-**Why entropy falls in some regions and not others.** This was the instructor's question on Part 1 (C26, C27).
+**Why entropy falls in some regions and not others.** This was the instructor's question on Part 1 (C26, C27). We measure Shannon entropy over the ten digits; its largest possible value, the Hartley measure log2 10 = 3.32 bits, is where every region starts after a Reset (Shannon 1948; Hartley 1928; lecture 13). B3 explains each behaviour from the rules.
 
 - Regions 1 and 2 fall (3.25 to 0.78 bits and 3.26 to 0.04 bits) because their rules trap cells: Region 1 in stable gate states at 4 and 5, Region 2 at 0.
 - Region 4 cannot change, because swaps keep the value counts.
@@ -381,16 +413,18 @@ The Black Box is four rules sharing one screen, each built from a different idea
 
 **Why we trust the model as a whole.** A box built only from the rules in Part A, started from the 30 held-out starting grids, reproduces the real box's activity and end state in all four regions (C41). Apart from the Region 3 table, the model has no fitted probabilities.
 
-### B4. Limitations and open questions
+### B5. Limitations and open questions
 
-1. **Region 1's late activity, block D.** In steps 1,001-2,000 the real box and the rebuilt box agree in blocks A, B and C, but block D (rows 6-10, columns 1-5) changes 26.0 times per run in the real box against 14.4 in the rebuilt one, and stays busy (more than 40 late changes) in 24 of 91 real runs against 9 of 91 rebuilt ones (C43). Every recorded change still obeys the gates, the page picks Region 1 cells uniformly, and block D's outside inputs flip about as often as in the model, so the difference is in how often block D settles into a stable state. We have not found its cause.
+1. **Region 1's late activity, block D.** In steps 1,001-2,000 the real box and the rebuilt box agree in blocks A, B and C, but block D (rows 6-10, columns 1-5) changes 26.0 times per run in the real box against 14.4 in the rebuilt one, and stays busy (more than 40 late changes) in 24 of 91 real runs against 9 of 91 rebuilt ones (C43). Every recorded change still obeys the gates, the page picks Region 1 cells uniformly, and block D's outside inputs flip about as often as in the model, so the difference is in how often block D settles into a stable state. We have not found its cause. In Rosen's sense, block D is where the box is still complex relative to our model: the place where the model's predictions depart from what the system does (Rosen 1987; lectures 13 and 15).
 2. **Region 3's table is measured, not derived.** We found no simple formula that fits it as well as the table (C33).
 3. **Region 2 neighbour effect.** Drops to 0 are more likely next to 0s (C25). This is probably a side effect of zeros spreading through each part, which raises both the chance of a 0 partner and the number of 0 neighbours; we have not tested this directly.
 4. **Step size.** All data was recorded one step at a time; presses with n > 1 are assumed to equal n single steps.
 5. **Box size.** The minimum-model statements in A8 follow from the rules but could not be tested, because the real box has only one size.
 6. **Only the visible grid.** The rules reproduce everything the page shows; they are our model of the page, not its code.
 
-### B5. Team contributions
+**What the tests do and do not show.** Following Popper (1959), many confirmations cannot prove a rule, while one counter-example can refute it (lecture 15). The rules in Part A have passed every test we ran, 48,476 Region 1 changes and 6,033 swaps among them, but that makes them well-tested, not proven. As Wigner put it, every empirical law has the disquieting quality that one does not know its limitations (Wigner 1960; lecture 15). The values 10-13 are a reminder: an event at a rate of about 3 in 10,000 cell-steps would be missed entirely by a short recording.
+
+### B6. Team contributions
 
 > **To be completed.** This is a placeholder. The exact contribution of each Group 5 member to Part 2 will be filled in accurately before final submission. The Region 1 gates, the two parts of Region 2 and the strict Region 4 rule were found by Marcus Washington.
 
@@ -406,7 +440,7 @@ The Black Box is four rules sharing one screen, each built from a different idea
 
 ## References: where every claim is proven
 
-All code, outputs and figures are in the public repository [sharbafshamim/ssie501-blackbox-rules](https://github.com/sharbafshamim/ssie501-blackbox-rules). To check a claim, search its tag (for example `C12`) in the script listed below and in that script's output, `results/<script name>.txt`; the numbers are also saved in `results/metrics/<script name>.json`. `python run_all.py` reruns every script, and `results/claims_check.txt` records the automatic test of every claim (44 of 44 pass). The notebook `notebooks/rule_tests_three_datasets.ipynb` repeats the C35-C43 tests with tables and figures.
+All code, outputs and figures are in the public repository [sharbafshamim/ssie501-blackbox-rules](https://github.com/sharbafshamim/ssie501-blackbox-rules). To check a claim, search its tag (for example `C12`) in the script listed below and in that script's output, `results/<script name>.txt`; the numbers are also saved in `results/metrics/<script name>.json`. `python run_all.py` reruns every script, and `results/claims_check.txt` records the automatic test of every claim (45 of 45 pass). The notebook `notebooks/rule_tests_three_datasets.ipynb` repeats the C35-C43 tests with tables and figures.
 
 **Data keys:** D = Group 1 scraper runs (61 runs) · H = shared held-out dataset, W. Zhang (30 runs) · G2 = Group 2 frames (40 steps). "Found on D, tested on H" means the rule was worked out from D and then checked on H, which played no part in finding it.
 
@@ -458,6 +492,7 @@ All code, outputs and figures are in the public repository [sharbafshamim/ssie50
 | C41 | The rebuilt box (Part A) matches the real runs (A9) | H, rebuilt from its 30 starting grids | `analysis/11_gate_rules.py` |
 | C42 | The first step after Reset follows the gates (47 of 47) | D only (the only data that include the Reset grid) | `analysis/11_gate_rules.py` |
 | C43 | Late Region 1 activity differs from the rebuilt box only in block D | D and H (91 runs) | `analysis/11_gate_rules.py` |
+| C44 | Deductions from the rules alone: Region 3's change rate and entropy; Region 1's stable states (B3) | none: computed from the rules (all 2²⁵ block states) | `analysis/11_gate_rules.py` |
 
 ### Supporting code
 
@@ -465,6 +500,7 @@ All code, outputs and figures are in the public repository [sharbafshamim/ssie50
 |---|---|
 | `blackbox/gate_model.py` | Part A as code: the rebuilt box used in A9 and C41-C43 |
 | `blackbox/rule_checks.py` | The rule checks behind C35-C42, applied to every recorded change |
+| `blackbox/deductions.py` | Exact search of a Region 1 block's stable states (C44) |
 | `blackbox/spec_model.py` | The earlier written model (C32) |
 | `analysis/spec_figures.py` | The two figures of this document (`figures/11_*.png`) |
 | `notebooks/rule_tests_three_datasets.ipynb` | C35-C43 with tables and figures, including the pick-rate map |
@@ -488,7 +524,24 @@ All code, outputs and figures are in the public repository [sharbafshamim/ssie50
 7. Group 5, *Black Box Part 1* presentation, 6 October 2026: the claims tested and corrected in B2 ("our Part 1 claim").
 8. Group 5 Electronic Laboratory Notebook (ELN), Black Box entries, September-November 2026, including the entropy study behind A2's Kruskal-Wallis result (p > 0.3).
 
-**Models the regions resemble (B3)**
+**Models the regions resemble (B4)**
 
 9. T. C. Schelling, "Dynamic models of segregation," *Journal of Mathematical Sociology* 1(2), 143-186, 1971. Region 4.
 10. S. A. Kauffman, "Metabolic stability and epigenesis in randomly constructed genetic nets," *Journal of Theoretical Biology* 22(3), 437-467, 1969. Region 1.
+
+**Course material and readings**
+
+11. L. M. Rocha, SSIE 501 Introduction to Systems Science, Binghamton University, lectures 10, 11, 13, 14 and 15 (Fall 2026), including the second Black Box assignment (lecture 13, slide 5).
+12. H. A. Simon (1962). "The Architecture of Complexity." *Proceedings of the American Philosophical Society* 106: 467-482. Also in Klir (2001). Near-decomposability (A8); the logic of discovery quoted on the assignment slide (B1).
+13. G. J. Klir (2001). *Facets of Systems Science*, 2nd ed. Springer. Systems as relations (A1); the hierarchy of systems for model inference (Purpose, B2); descriptive and uncertainty-based complexity (A3, B2).
+14. W. R. Ashby (1962). "Principles of the Self-Organizing System." In H. von Foerster and G. W. Zopf (eds.), *Principles of Self-Organization*, 255-278. Pergamon. Region 4 (A4).
+15. S. A. Kauffman (1984). "Emergent Properties in Random Complex Automata." *Physica D* 10(1-2): 145-156. Region 1 (A5, B4).
+16. C. E. Shannon (1948). "A Mathematical Theory of Communication." *Bell System Technical Journal* 27: 379-423, 623-656. Entropy (A3, B3, B4).
+17. R. V. L. Hartley (1928). "Transmission of Information." *Bell System Technical Journal* 7: 535-563. Hartley measure (B4).
+18. A. Rosenblueth and N. Wiener (1945). "The Role of Models in Science." *Philosophy of Science* 12(4): 316-321. Testing the model against measurements (A9).
+19. M. De Domenico, L. Allegri, G. Caldarelli, V. d'Andrea, B. Di Camillo, L. M. Rocha, J. Rozum, R. Sbarbati and F. Zambelli (2025). "Challenges and Opportunities for Digital Twins in Precision Medicine: A Complex Systems Perspective." *npj Digital Medicine* 8: 37. Digital twins (A9).
+20. H. J. Bremermann (1962). "Optimization through Evolution and Recombination." In M. C. Yovits, G. T. Jacobi and G. D. Goldstein (eds.), *Self-Organizing Systems*, 93-106. Spartan Books. Limit of computation (Purpose).
+21. Y. Lazebnik (2002). "Can a Biologist Fix a Radio? Or, What I Learned While Studying Apoptosis." *Cancer Cell* 2(3): 179-182. Group 5's discussion paper (Purpose).
+22. R. Rosen (1987). "On Complex Systems." *European Journal of Operational Research* 30(2): 129-134. Complexity relative to a model (B5).
+23. E. P. Wigner (1960). "The Unreasonable Effectiveness of Mathematics in the Natural Sciences." *Communications on Pure and Applied Mathematics* 13: 1-14. Limits of empirical laws (B5).
+24. K. R. Popper (1959). *The Logic of Scientific Discovery*. Hutchinson. Falsification (B5).

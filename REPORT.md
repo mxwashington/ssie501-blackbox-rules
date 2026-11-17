@@ -23,7 +23,7 @@ Every finding in Sections 1-8 carries a tag such as **(C12)**. That tag appears 
 
 1. **The code that computes it.** Search the `analysis/` scripts for `"C12"`; each claim is one `log.claim("C12", ...)` call.
 2. **The output it printed.** Search `results/*.txt` for `[C12]`; the full numbers are in `results/metrics/*.json`.
-3. **An automatic test.** `check_claims.py` re-tests every claim from the saved numbers. The latest result is in [`results/claims_check.txt`](results/claims_check.txt): **44/44 pass.**
+3. **An automatic test.** `check_claims.py` re-tests every claim from the saved numbers. The latest result is in [`results/claims_check.txt`](results/claims_check.txt): **45/45 pass.**
 
 Running `python run_all.py` reproduces everything in about 2 minutes. The [claim index](#claim-index) at the end lists every claim with its code, output and test.
 
@@ -295,6 +295,7 @@ D = discovery (Group 1, 61 runs) · H = held-out (shared dataset, 30 runs) · G2
 | C41 | The current model reproduces the held-out runs | H | `analysis/11_gate_rules.py`, `blackbox/gate_model.py` | `results/11_gate_rules.txt` | `check_claims.py` |
 | C42 | The first step after Reset follows the Area 1 gates | D | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
 | C43 | Late Area 1 activity differs from the rebuilt box only in block D | D + H | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
+| C44 | Deductions from the rules: Area 3 change rate and entropy; Area 1 block stable states | none (from the rules) | `analysis/11_gate_rules.py`, `blackbox/deductions.py` | `results/11_gate_rules.txt` | `check_claims.py` |
 
 ## Reproduce
 

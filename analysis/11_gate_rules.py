@@ -115,4 +115,17 @@ log.claim("C43", "Late Region 1 activity (steps 1,001-2,000), changes per run by
           + ", ".join(f"{k} {v['real']:.1f} vs {v['model']:.1f}" for k, v in blk.items())
           + f"; runs with > 40 late block-D changes: real {busy_real}/{len(long_runs)}, rebuilt {busy_model}/{len(long_runs)}",
           by_block=blk, busy_D_real=busy_real, busy_D_model=busy_model, n_runs=len(long_runs))
+
+# C44: deductions from the rules alone (no data): Region 3's same-value chance and entropy; Region 1's stable states
+from blackbox.gate_model import R3_TABLE
+from blackbox.deductions import fixed_points
+import itertools
+same = float((R3_TABLE ** 2).sum())
+h_table = float(-(R3_TABLE * np.log2(R3_TABLE)).sum())
+fps = {"".join(map(str, k)): sorted(bin(v).count("1") for v in fixed_points(*k)) for k in itertools.product([0, 1], repeat=3)}
+log.claim("C44", f"Deductions: a Region 3 redraw repeats the old value with chance {same:.3f} (so the region changes in "
+          f"{1 - same:.1%} of steps) and its entropy settles at {h_table:.2f} bits; a Region 1 block with outside inputs "
+          f"p, q, c all LOW has exactly {len(fps['000'])} stable states, with {fps['000']} of 25 cells HIGH "
+          f"(all 2^25 states checked); other input settings give " + "; ".join(f"{k}: {v}" for k, v in fps.items() if k != "000"),
+          r3_same=same, r3_entropy=h_table, r1_stable_states=fps)
 log.save()

@@ -22,3 +22,4 @@ Full model vs held-out runs (2,000 steps, means):
   r2_share0          model     0.994   real     0.995
 [C41] The Part A model, rebuilt from the 30 held-out starting grids, matches the held-out runs (table above)
 [C43] Late Region 1 activity (steps 1,001-2,000), changes per run by block, real vs rebuilt: A 10.9 vs 10.7, B 10.8 vs 10.9, C 12.8 vs 12.1, D 26.0 vs 14.4; runs with > 40 late block-D changes: real 24/91, rebuilt 9/91
+[C44] Deductions: a Region 3 redraw repeats the old value with chance 0.276 (so the region changes in 72.4% of steps) and its entropy settles at 2.14 bits; a Region 1 block with outside inputs p, q, c all LOW has exactly 4 stable states, with [1, 2, 6, 9] of 25 cells HIGH (all 2^25 states checked); other input settings give 001: [9, 10, 12]; 010: [1, 2, 6, 9]; 011: [9, 10, 12]; 100: [1, 2, 6, 9]; 101: [10, 11, 13]; 110: [9, 10, 12]; 111: [11, 12, 14]

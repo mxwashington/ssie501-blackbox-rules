@@ -43,5 +43,6 @@ C40    PASS   11_gate_rules          the strict Region 4 rule holds for every he
 C41    PASS   11_gate_rules          rebuilt model within 10% of the held-out runs on cells changed per region, and within 0.1 bits on end entropy
 C42    PASS   11_gate_rules          the first step after Reset follows the Region 1 gates in every Group 1 run
 C43    PASS   11_gate_rules          late Region 1 activity matches the rebuilt box in blocks A-C (within 15%) and is higher in block D
+C44    PASS   11_gate_rules          deductions: Region 3 repeat chance about 0.28 and table entropy about 2.14 bits; Region 1 block with LOW inputs has stable states with 1, 2, 6 and 9 HIGH cells
 
-44/44 claims pass.
+45/45 claims pass.

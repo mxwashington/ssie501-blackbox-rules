@@ -23,9 +23,9 @@ Each step the areas update in order 1, 2, 3, 4: Areas 1-3 pick one random cell a
 
 ## How everything is proven
 
-- Every finding has an ID (C01-C43). Search for the ID in `analysis/` to find the code, and in `results/` to find the printed output.
+- Every finding has an ID (C01-C44). Search for the ID in `analysis/` to find the code, and in `results/` to find the printed output.
 - Rules were found on one dataset (61 runs) and tested on a separate held-out dataset (30 runs).
-- `check_claims.py` re-tests all 44 claims automatically. Current status: **44/44 pass** ([results/claims_check.txt](results/claims_check.txt)).
+- `check_claims.py` re-tests all 45 claims automatically. Current status: **45/45 pass** ([results/claims_check.txt](results/claims_check.txt)).
 
 ## Run it
 
@@ -51,7 +51,7 @@ The held-out shared dataset is included. Group 1's discovery runs (and Group 2's
 | `analysis/08_model_spec.py` | Print the model tables and test the written model (C31-C32) |
 | `analysis/09_area3_family.py` | Region 3 vs textbook distributions (C33) |
 | `analysis/10_worked_example.py` | Real worked examples for the specification (C34) |
-| `analysis/11_gate_rules.py` | Area 1 gates, Area 2 parts, strict Area 4 rule, update order, rebuilt model, on all three datasets (C35-C43) |
+| `analysis/11_gate_rules.py` | Area 1 gates, Area 2 parts, strict Area 4 rule, update order, rebuilt model, on all three datasets (C35-C43), and deductions from the rules (C44) |
 | `notebooks/rule_tests_three_datasets.ipynb` | The same tests as a readable notebook, with tables and figures, run on all three datasets |
 | `collect/recorder.js` | Records runs of the page from inside the browser (Reset, then Next n Step), with step-counter checks |
 | `MODEL_SPECIFICATION.md` | The stand-alone model + methods and conclusions |
