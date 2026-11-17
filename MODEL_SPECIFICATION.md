@@ -51,7 +51,7 @@ Region 2 has two parts that follow different rules:
 
 One press of "Next n Step" with n = 1 is one step. In one step each region changes at most one cell (Region 4: one pair).
 
-All our data was recorded one step at a time. We treat a press with n = 10 as ten single steps, because Part 1 found that entropy depends only on the total number of steps, not on how presses are split (Kruskal-Wallis p > 0.3).
+A press with n = 10 behaves as ten single steps. In two runs recorded with 10-step presses, no press ever changed more than 10 cells of a region, Region 4's value counts never changed, and the region entropies at steps 500, 1,000 and 2,000 stayed within the spread of ten single-step runs (C46). Part 1 found the same from entropy alone (Kruskal-Wallis p > 0.3).
 
 The regions take turns in a fixed order, and each one sees the changes made earlier in the same step:
 
@@ -101,7 +101,7 @@ This choice is an instance of the trade-off between descriptive and uncertainty-
 **The values 10-13.**
 
 - The table has no upper limit at 9, so very rarely it produces 10 or more. These are the "out of bounds" values Dr. Costa called a glitch.
-- They appear only in Region 3 (5,635 cell-steps in our data, none in the other regions), at the rate the tail of the table predicts (C10).
+- They appear only in Region 3 (5,635 cell-steps in our data, none in the other regions), at the rate the tail of the table predicts (C10). Across D, H and F, values of 10 or more fill 0.036% of Region 3 cell-steps after step 500, against 0.030% predicted by the table (C48).
 - Most likely the designer meant to cap the draw at 9. A rebuild that wants to look like the page should keep values up to 13; one that wants the intended rule can cap at 9.
 - Region 1's gates read a value of 10 or more as HIGH (A5).
 
@@ -125,7 +125,7 @@ This is the same kind of rule as Schelling's segregation model, in which agents 
 **How sure we are.**
 
 - Every recorded swap raised the total number of matching neighbours: 4,022 of 4,022 in the discovery runs, 2,002 of 2,002 in the held-out runs and 9 of 9 in Group 2's frames (C12).
-- The stricter "neither cell loses" rule held for all **6,033** recorded swaps: 4,022 in D, 2,002 in H and 9 in G2 (C40).
+- The stricter "neither cell loses" rule held for all **6,033** recorded swaps: 4,022 in D, 2,002 in H and 9 in G2 (C40), and for all **683** swaps in our fresh runs (C45).
 - With this rule and no swap probability, the rebuilt box makes 132 Region 4 changes per run against 133 in the real box (C41). The 54-96% "swap rates" in our earlier version (C14) were the swaps this rule rejects: ones that raise the total but cost one of the two cells a match.
 
 ### A5. Region 1 rule: counters steered by logic gates
@@ -205,6 +205,7 @@ This is the same kind of rule as Schelling's segregation model, in which agents 
 - The two kinds of move are certain: 34,547 changes in the discovery runs and 17,148 in the held-out runs, with no other kind of change (C16).
 - The gates decide every jump. In all three datasets, none of which was used to find them, the gates predict jump or advance correctly for **48,476 of 48,476** changes from 0-3 or 6-9: 32,400 in D, 16,046 in H and 30 in G2 (C35).
 - That includes the very first step after Reset, which only Group 1's runs record: 47 of 47 Region 1 changes (C42).
+- On our own fresh recordings (F), made after the rules were written down, the gates were right for **5,471 of 5,471** changes, including 8 of 8 first steps, and settled cells never jumped while their gate agreed (C45).
 - A cell sitting at 4 or 5 whose gate agrees with its half **never** jumped: 0 jumps in 13.06 million cell-steps. When its gate disagrees, it jumps 1.04% of the time per step, which is the 1-in-100 chance of being picked (C36).
 
 ### A6. Region 2 rule: keep the smaller, or multiply and keep the last digit
@@ -229,6 +230,7 @@ So a cell here can only stay the same or go down, and the zeros of Region 3 drag
 
 - Minimum part: **7,751** changes, **0** rises, and every new value was present somewhere in rows 11-20 at that step.
 - Multiply part: all **7,439** changes equal (old value × a value present in the multiply part) with the last digit kept.
+- Fresh runs (F): 830 of 830 minimum-part changes with 0 rises, and 820 of 820 multiply-part changes (C45).
 - With these two rules and no fitted probabilities, the rebuilt box makes 165 Region 2 changes per run, the same as the real box (C41).
 
 ### A7. Worked examples from a real run
@@ -293,7 +295,7 @@ A correct rebuild, run 2,000 steps from a random grid and averaged over many run
 | Region 1: share of cells that are 4 or 5 | 99% | 98% |
 | Region 2: share of cells that are 0 | 99% | 99% |
 
-All four regions match. The one gap is Region 1's late activity, and it sits in block D alone (C43, B5).
+All four regions match. The one gap is Region 1's late activity, and it sits in block D alone (C43), confirmed on our fresh recordings (C47, B5).
 
 This is the test of a model in the Hertzian sense used in class: a model earns trust when its logical consequences, here a rebuilt box started from the real starting grids, match fresh measurements of the world (Rosenblueth and Wiener 1945; lecture 11). The rebuilt box is in that sense a small digital twin of the page: a transparent copy of its mechanism that responds as the original does from the same starting point (De Domenico et al. 2025; lecture 14).
 
@@ -313,8 +315,9 @@ This is the separation Simon draws between the discovery of a law, which finds a
 | Marcus's runs | finding the Region 1 gates, the two parts of Region 2 and the strict Region 4 rule | 32 runs (21,720 steps) + 200 short runs (10,000 steps) | Marcus's own browser scripts, each recording checked so every "after" grid matched the next "before" |
 | **H** · Held-out: shared dataset (W. Zhang, posted for the class) | testing only | 30 runs × 2,000 recorded grids | Selenium browser controller from the shared starter notebook |
 | **G2** · Group 2 frames | extra check | 1 run × 40 steps | Python script `blackbox_collect.py` (`requests` + `BeautifulSoup`) |
+| **F** · Group 5 fresh runs | testing only | 10 runs × 2,000 single steps from Reset, plus 2 runs of 200 presses of "Next 10 Steps" | `collect/recorder.js`, run inside the page in a browser on 16 November 2026; every request checked against the page's step counter |
 
-**Which data each result uses.** D, H and G2 are the short names in the table above. Because the rules for Regions 1, 2 and 4 were found on Marcus's runs, D, H and G2 are all test data for them. The full list, claim by claim, is in [References](#references-where-every-claim-is-proven).
+**Which data each result uses.** D, H, G2 and F are the short names in the table above. Because the rules for Regions 1, 2 and 4 were found on Marcus's runs, D, H, G2 and F are all test data for them; F was recorded after the rules were written down, so it is the cleanest test. The full list, claim by claim, is in [References](#references-where-every-claim-is-proven).
 
 | Results | Data used |
 |---|---|
@@ -324,6 +327,7 @@ This is the separation Simon draws between the discovery of a law, which finds a
 | C42 (first step after Reset) | D only, the only data that include the Reset grid |
 | C43 (where the rebuilt box still differs) | D and H (91 runs of 2,000 steps) |
 | C44 (deductions, B3) | no data: worked out from the rules alone |
+| C45-C48 (every rule on new data, 10-step presses, block D retested, values 10-13) | F, recorded on 16 November 2026 (C48 also uses D and H) |
 
 - **The held-out shared dataset.** Wuyang Zhang, *Black Box Shared Dataset* (files `trajectory_001_FULLBOX.npz` to `trajectory_030_FULLBOX.npz`, dated 23 October 2026). Each file holds the full 20 × 20 grid after steps 1 to 2,000 (`full_history`), the step numbers (`recorded_steps`) and the Region 2 cells (`r2_history`). The copy in this repository (`data/shared_dataset/`) is identical to the posted zip, checked file by file.
 - **How the page numbers steps.** After Reset, the page labels the fresh grid "Current step: 1". H's first recorded grid is also labelled step 1, so it is most likely the Reset grid itself. D starts at the Reset grid too, and its first step is tested in C42.
@@ -333,7 +337,7 @@ This is the separation Simon draws between the discovery of a law, which finds a
 - **One step = one press with n = 1.** Steps are numbered from Reset.
 - **AI tools.** AI assistants were used to write recording scripts, to search the recorded grids for candidate rules, and to run the tests. Every rule in Part A was kept only after it passed the held-out runs; Marcus also had a second, independent search start from scratch, and it reached the same rules.
 
-The analysis is a set of Python scripts in this repository, grouped by region. Each finding is printed with its claim tag and re-tested by `check_claims.py`; all 45 checks pass.
+The analysis is a set of Python scripts in this repository, grouped by region. Each finding is printed with its claim tag and re-tested by `check_claims.py`; all 49 checks pass.
 
 ### B2. How each rule was found: what we tested, rejected and kept
 
@@ -415,10 +419,10 @@ General systems theory looks for the same organization across different fields, 
 
 ### B5. Limitations and open questions
 
-1. **Region 1's late activity, block D.** In steps 1,001-2,000 the real box and the rebuilt box agree in blocks A, B and C, but block D (rows 6-10, columns 1-5) changes 26.0 times per run in the real box against 14.4 in the rebuilt one, and stays busy (more than 40 late changes) in 24 of 91 real runs against 9 of 91 rebuilt ones (C43). Every recorded change still obeys the gates, the page picks Region 1 cells uniformly, and block D's outside inputs flip about as often as in the model, so the difference is in how often block D settles into a stable state. We have not found its cause. In Rosen's sense, block D is where the box is still complex relative to our model: the place where the model's predictions depart from what the system does (Rosen 1987; lectures 13 and 15).
+1. **Region 1's late activity, block D.** In steps 1,001-2,000 the real box and the rebuilt box agree in blocks A, B and C, but block D (rows 6-10, columns 1-5) changes 26.0 times per run in the real box against 14.4 in the rebuilt one, and stays busy (more than 40 late changes) in 24 of 91 real runs against 9 of 91 rebuilt ones (C43). Every recorded change still obeys the gates, the page picks Region 1 cells uniformly, and block D's outside inputs flip about as often as in the model, so the difference is in how often block D settles into a stable state. Our fresh recordings confirm it on new data: block D changes 28.4 times per run late in the run against 15.1 in the rebuilt box, while blocks A-C differ much less (C47). We have not found its cause. In Rosen's sense, block D is where the box is still complex relative to our model: the place where the model's predictions depart from what the system does (Rosen 1987; lectures 13 and 15).
 2. **Region 3's table is measured, not derived.** We found no simple formula that fits it as well as the table (C33).
 3. **Region 2 neighbour effect.** Drops to 0 are more likely next to 0s (C25). This is probably a side effect of zeros spreading through each part, which raises both the chance of a 0 partner and the number of 0 neighbours; we have not tested this directly.
-4. **Step size.** All data was recorded one step at a time; presses with n > 1 are assumed to equal n single steps.
+4. **Step size.** Presses of 10 steps were tested in only two runs (C46). They agree with single steps on every check, but two runs are too few to rule out a small difference.
 5. **Box size.** The minimum-model statements in A8 follow from the rules but could not be tested, because the real box has only one size.
 6. **Only the visible grid.** The rules reproduce everything the page shows; they are our model of the page, not its code.
 
@@ -440,9 +444,9 @@ General systems theory looks for the same organization across different fields, 
 
 ## References: where every claim is proven
 
-All code, outputs and figures are in the public repository [sharbafshamim/ssie501-blackbox-rules](https://github.com/sharbafshamim/ssie501-blackbox-rules). To check a claim, search its tag (for example `C12`) in the script listed below and in that script's output, `results/<script name>.txt`; the numbers are also saved in `results/metrics/<script name>.json`. `python run_all.py` reruns every script, and `results/claims_check.txt` records the automatic test of every claim (45 of 45 pass). The notebook `notebooks/rule_tests_three_datasets.ipynb` repeats the C35-C43 tests with tables and figures.
+All code, outputs and figures are in the public repository [sharbafshamim/ssie501-blackbox-rules](https://github.com/sharbafshamim/ssie501-blackbox-rules). To check a claim, search its tag (for example `C12`) in the script listed below and in that script's output, `results/<script name>.txt`; the numbers are also saved in `results/metrics/<script name>.json`. `python run_all.py` reruns every script, and `results/claims_check.txt` records the automatic test of every claim (49 of 49 pass). The notebook `notebooks/rule_tests_three_datasets.ipynb` repeats the C35-C43 tests with tables and figures.
 
-**Data keys:** D = Group 1 scraper runs (61 runs) · H = shared held-out dataset, W. Zhang (30 runs) · G2 = Group 2 frames (40 steps). "Found on D, tested on H" means the rule was worked out from D and then checked on H, which played no part in finding it.
+**Data keys:** D = Group 1 scraper runs (61 runs) · H = shared held-out dataset, W. Zhang (30 runs) · G2 = Group 2 frames (40 steps) · F = Group 5 fresh runs (12 runs, 16 November 2026). "Found on D, tested on H" means the rule was worked out from D and then checked on H, which played no part in finding it.
 
 ### Every claim
 
@@ -493,6 +497,10 @@ All code, outputs and figures are in the public repository [sharbafshamim/ssie50
 | C42 | The first step after Reset follows the gates (47 of 47) | D only (the only data that include the Reset grid) | `analysis/11_gate_rules.py` |
 | C43 | Late Region 1 activity differs from the rebuilt box only in block D | D and H (91 runs) | `analysis/11_gate_rules.py` |
 | C44 | Deductions from the rules alone: Region 3's change rate and entropy; Region 1's stable states (B3) | none: computed from the rules (all 2²⁵ block states) | `analysis/11_gate_rules.py` |
+| C45 | Every rule holds on the fresh runs (5,471 Region 1 changes, 830 + 820 Region 2 changes, 683 swaps) | F | `analysis/12_fresh_runs.py` |
+| C46 | A 10-step press behaves as ten single steps | F (2 ten-step runs vs 10 single-step runs) | `analysis/12_fresh_runs.py` |
+| C47 | Block D's extra late activity, confirmed on new data | F | `analysis/12_fresh_runs.py` |
+| C48 | Values 10-13: only in Region 3, near the table's rate | D, H and F | `analysis/12_fresh_runs.py` |
 
 ### Supporting code
 
@@ -501,6 +509,7 @@ All code, outputs and figures are in the public repository [sharbafshamim/ssie50
 | `blackbox/gate_model.py` | Part A as code: the rebuilt box used in A9 and C41-C43 |
 | `blackbox/rule_checks.py` | The rule checks behind C35-C42, applied to every recorded change |
 | `blackbox/deductions.py` | Exact search of a Region 1 block's stable states (C44) |
+| `collect/recorder.js` | Records the page from inside the browser: Reset, then Next n Step, with step-counter checks (dataset F) |
 | `blackbox/spec_model.py` | The earlier written model (C32) |
 | `analysis/spec_figures.py` | The two figures of this document (`figures/11_*.png`) |
 | `notebooks/rule_tests_three_datasets.ipynb` | C35-C43 with tables and figures, including the pick-rate map |
@@ -517,31 +526,32 @@ All code, outputs and figures are in the public repository [sharbafshamim/ssie50
 3. Wuyang Zhang, *Black Box Shared Dataset* (`trajectory_001_FULLBOX.npz` to `trajectory_030_FULLBOX.npz`, files dated 23 October 2026) and *Black Box Shared Starter Code*, posted for the class. Dataset H.
 4. SSIE 501 Group 2, `frames.csv` (41 grids) and collection script `blackbox_collect.py`. Dataset G2.
 5. Marcus Washington, own recordings: 32 runs (21,720 steps), 16-24 September 2026, and 200 short runs (10,000 steps), October 2026. Used to find the Region 1, 2 and 4 rules; not in this repository.
+6. Group 5, fresh runs recorded with `collect/recorder.js` on 16 November 2026 (12 runs, in `data/group5_runs/`). Dataset F.
 
 **Group 5 work this document builds on**
 
-6. Marcus Washington, *SSIE 501 Black Box: A Proposed Simulator for Group 5*, 4 November 2026, and notebook `SSIE501_Blackbox_Simulator_Explained_v2.ipynb`: the Region 1 gates, the two Region 2 parts and the strict Region 4 rule.
-7. Group 5, *Black Box Part 1* presentation, 6 October 2026: the claims tested and corrected in B2 ("our Part 1 claim").
-8. Group 5 Electronic Laboratory Notebook (ELN), Black Box entries, September-November 2026, including the entropy study behind A2's Kruskal-Wallis result (p > 0.3).
+7. Marcus Washington, *SSIE 501 Black Box: A Proposed Simulator for Group 5*, 4 November 2026, and notebook `SSIE501_Blackbox_Simulator_Explained_v2.ipynb`: the Region 1 gates, the two Region 2 parts and the strict Region 4 rule.
+8. Group 5, *Black Box Part 1* presentation, 6 October 2026: the claims tested and corrected in B2 ("our Part 1 claim").
+9. Group 5 Electronic Laboratory Notebook (ELN), Black Box entries, September-November 2026, including the entropy study behind A2's Kruskal-Wallis result (p > 0.3).
 
 **Models the regions resemble (B4)**
 
-9. T. C. Schelling, "Dynamic models of segregation," *Journal of Mathematical Sociology* 1(2), 143-186, 1971. Region 4.
-10. S. A. Kauffman, "Metabolic stability and epigenesis in randomly constructed genetic nets," *Journal of Theoretical Biology* 22(3), 437-467, 1969. Region 1.
+10. T. C. Schelling, "Dynamic models of segregation," *Journal of Mathematical Sociology* 1(2), 143-186, 1971. Region 4.
+11. S. A. Kauffman, "Metabolic stability and epigenesis in randomly constructed genetic nets," *Journal of Theoretical Biology* 22(3), 437-467, 1969. Region 1.
 
 **Course material and readings**
 
-11. L. M. Rocha, SSIE 501 Introduction to Systems Science, Binghamton University, lectures 10, 11, 13, 14 and 15 (Fall 2026), including the second Black Box assignment (lecture 13, slide 5).
-12. H. A. Simon (1962). "The Architecture of Complexity." *Proceedings of the American Philosophical Society* 106: 467-482. Also in Klir (2001). Near-decomposability (A8); the logic of discovery quoted on the assignment slide (B1).
-13. G. J. Klir (2001). *Facets of Systems Science*, 2nd ed. Springer. Systems as relations (A1); the hierarchy of systems for model inference (Purpose, B2); descriptive and uncertainty-based complexity (A3, B2).
-14. W. R. Ashby (1962). "Principles of the Self-Organizing System." In H. von Foerster and G. W. Zopf (eds.), *Principles of Self-Organization*, 255-278. Pergamon. Region 4 (A4).
-15. S. A. Kauffman (1984). "Emergent Properties in Random Complex Automata." *Physica D* 10(1-2): 145-156. Region 1 (A5, B4).
-16. C. E. Shannon (1948). "A Mathematical Theory of Communication." *Bell System Technical Journal* 27: 379-423, 623-656. Entropy (A3, B3, B4).
-17. R. V. L. Hartley (1928). "Transmission of Information." *Bell System Technical Journal* 7: 535-563. Hartley measure (B4).
-18. A. Rosenblueth and N. Wiener (1945). "The Role of Models in Science." *Philosophy of Science* 12(4): 316-321. Testing the model against measurements (A9).
-19. M. De Domenico, L. Allegri, G. Caldarelli, V. d'Andrea, B. Di Camillo, L. M. Rocha, J. Rozum, R. Sbarbati and F. Zambelli (2025). "Challenges and Opportunities for Digital Twins in Precision Medicine: A Complex Systems Perspective." *npj Digital Medicine* 8: 37. Digital twins (A9).
-20. H. J. Bremermann (1962). "Optimization through Evolution and Recombination." In M. C. Yovits, G. T. Jacobi and G. D. Goldstein (eds.), *Self-Organizing Systems*, 93-106. Spartan Books. Limit of computation (Purpose).
-21. Y. Lazebnik (2002). "Can a Biologist Fix a Radio? Or, What I Learned While Studying Apoptosis." *Cancer Cell* 2(3): 179-182. Group 5's discussion paper (Purpose).
-22. R. Rosen (1987). "On Complex Systems." *European Journal of Operational Research* 30(2): 129-134. Complexity relative to a model (B5).
-23. E. P. Wigner (1960). "The Unreasonable Effectiveness of Mathematics in the Natural Sciences." *Communications on Pure and Applied Mathematics* 13: 1-14. Limits of empirical laws (B5).
-24. K. R. Popper (1959). *The Logic of Scientific Discovery*. Hutchinson. Falsification (B5).
+12. L. M. Rocha, SSIE 501 Introduction to Systems Science, Binghamton University, lectures 10, 11, 13, 14 and 15 (Fall 2026), including the second Black Box assignment (lecture 13, slide 5).
+13. H. A. Simon (1962). "The Architecture of Complexity." *Proceedings of the American Philosophical Society* 106: 467-482. Also in Klir (2001). Near-decomposability (A8); the logic of discovery quoted on the assignment slide (B1).
+14. G. J. Klir (2001). *Facets of Systems Science*, 2nd ed. Springer. Systems as relations (A1); the hierarchy of systems for model inference (Purpose, B2); descriptive and uncertainty-based complexity (A3, B2).
+15. W. R. Ashby (1962). "Principles of the Self-Organizing System." In H. von Foerster and G. W. Zopf (eds.), *Principles of Self-Organization*, 255-278. Pergamon. Region 4 (A4).
+16. S. A. Kauffman (1984). "Emergent Properties in Random Complex Automata." *Physica D* 10(1-2): 145-156. Region 1 (A5, B4).
+17. C. E. Shannon (1948). "A Mathematical Theory of Communication." *Bell System Technical Journal* 27: 379-423, 623-656. Entropy (A3, B3, B4).
+18. R. V. L. Hartley (1928). "Transmission of Information." *Bell System Technical Journal* 7: 535-563. Hartley measure (B4).
+19. A. Rosenblueth and N. Wiener (1945). "The Role of Models in Science." *Philosophy of Science* 12(4): 316-321. Testing the model against measurements (A9).
+20. M. De Domenico, L. Allegri, G. Caldarelli, V. d'Andrea, B. Di Camillo, L. M. Rocha, J. Rozum, R. Sbarbati and F. Zambelli (2025). "Challenges and Opportunities for Digital Twins in Precision Medicine: A Complex Systems Perspective." *npj Digital Medicine* 8: 37. Digital twins (A9).
+21. H. J. Bremermann (1962). "Optimization through Evolution and Recombination." In M. C. Yovits, G. T. Jacobi and G. D. Goldstein (eds.), *Self-Organizing Systems*, 93-106. Spartan Books. Limit of computation (Purpose).
+22. Y. Lazebnik (2002). "Can a Biologist Fix a Radio? Or, What I Learned While Studying Apoptosis." *Cancer Cell* 2(3): 179-182. Group 5's discussion paper (Purpose).
+23. R. Rosen (1987). "On Complex Systems." *European Journal of Operational Research* 30(2): 129-134. Complexity relative to a model (B5).
+24. E. P. Wigner (1960). "The Unreasonable Effectiveness of Mathematics in the Natural Sciences." *Communications on Pure and Applied Mathematics* 13: 1-14. Limits of empirical laws (B5).
+25. K. R. Popper (1959). *The Logic of Scientific Discovery*. Hutchinson. Falsification (B5).

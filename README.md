@@ -23,9 +23,9 @@ Each step the areas update in order 1, 2, 3, 4: Areas 1-3 pick one random cell a
 
 ## How everything is proven
 
-- Every finding has an ID (C01-C44). Search for the ID in `analysis/` to find the code, and in `results/` to find the printed output.
+- Every finding has an ID (C01-C48). Search for the ID in `analysis/` to find the code, and in `results/` to find the printed output.
 - Rules were found on one dataset (61 runs) and tested on a separate held-out dataset (30 runs).
-- `check_claims.py` re-tests all 45 claims automatically. Current status: **45/45 pass** ([results/claims_check.txt](results/claims_check.txt)).
+- `check_claims.py` re-tests all 49 claims automatically. Current status: **49/49 pass** ([results/claims_check.txt](results/claims_check.txt)).
 
 ## Run it
 
@@ -54,6 +54,7 @@ The held-out shared dataset is included. Group 1's discovery runs (and Group 2's
 | `analysis/11_gate_rules.py` | Area 1 gates, Area 2 parts, strict Area 4 rule, update order, rebuilt model, on all three datasets (C35-C43), and deductions from the rules (C44) |
 | `notebooks/rule_tests_three_datasets.ipynb` | The same tests as a readable notebook, with tables and figures, run on all three datasets |
 | `collect/recorder.js` | Records runs of the page from inside the browser (Reset, then Next n Step), with step-counter checks |
+| `analysis/12_fresh_runs.py` | Every rule on Group 5's fresh recordings, 10-step presses, block D retested, values 10-13 (C45-C48) |
 | `MODEL_SPECIFICATION.md` | The stand-alone model + methods and conclusions |
 | `blackbox/` | Shared code: data loaders, area map, event extraction, simulator, `spec_model.py` (the earlier written model) and `gate_model.py` (the current model, Part A of the specification) |
 | `check_claims.py` | Automatic PASS/FAIL test of every claim |

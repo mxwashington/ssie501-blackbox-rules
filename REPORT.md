@@ -23,7 +23,7 @@ Every finding in Sections 1-8 carries a tag such as **(C12)**. That tag appears 
 
 1. **The code that computes it.** Search the `analysis/` scripts for `"C12"`; each claim is one `log.claim("C12", ...)` call.
 2. **The output it printed.** Search `results/*.txt` for `[C12]`; the full numbers are in `results/metrics/*.json`.
-3. **An automatic test.** `check_claims.py` re-tests every claim from the saved numbers. The latest result is in [`results/claims_check.txt`](results/claims_check.txt): **45/45 pass.**
+3. **An automatic test.** `check_claims.py` re-tests every claim from the saved numbers. The latest result is in [`results/claims_check.txt`](results/claims_check.txt): **49/49 pass.**
 
 Running `python run_all.py` reproduces everything in about 2 minutes. The [claim index](#claim-index) at the end lists every claim with its code, output and test.
 
@@ -48,7 +48,7 @@ Running `python run_all.py` reproduces everything in about 2 minutes. The [claim
 
 ## Data and method
 
-**Short names used throughout:** **D** = discovery set, Group 1's 61 scraper runs · **H** = held-out set, W. Zhang's shared 30 runs · **G2** = Group 2's 40-step frames. D is where the earlier rules were found and H is where they were tested; the Area 1, 2 and 4 rules of Section 10 came from Marcus Washington's own runs, so D, H and G2 are all test data for them.
+**Short names used throughout:** **D** = discovery set, Group 1's 61 scraper runs · **H** = held-out set, W. Zhang's shared 30 runs · **G2** = Group 2's 40-step frames · **F** = Group 5's own fresh recordings (12 runs, 16 November 2026). D is where the earlier rules were found and H is where they were tested; the Area 1, 2 and 4 rules of Section 10 came from Marcus Washington's own runs, so D, H and G2 are all test data for them.
 
 | Dataset | Role | Size | How it was collected |
 |---|---|---|---|
@@ -296,6 +296,10 @@ D = discovery (Group 1, 61 runs) · H = held-out (shared dataset, 30 runs) · G2
 | C42 | The first step after Reset follows the Area 1 gates | D | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
 | C43 | Late Area 1 activity differs from the rebuilt box only in block D | D + H | `analysis/11_gate_rules.py` | `results/11_gate_rules.txt` | `check_claims.py` |
 | C44 | Deductions from the rules: Area 3 change rate and entropy; Area 1 block stable states | none (from the rules) | `analysis/11_gate_rules.py`, `blackbox/deductions.py` | `results/11_gate_rules.txt` | `check_claims.py` |
+| C45 | Every rule holds on Group 5's fresh recordings | F | `analysis/12_fresh_runs.py` | `results/12_fresh_runs.txt` | `check_claims.py` |
+| C46 | A 10-step press behaves as ten single steps | F | `analysis/12_fresh_runs.py` | `results/12_fresh_runs.txt` | `check_claims.py` |
+| C47 | Block D's extra late activity, confirmed on new data | F | `analysis/12_fresh_runs.py` | `results/12_fresh_runs.txt` | `check_claims.py` |
+| C48 | Values 10-13 only in Area 3, near the table's rate | D + H + F | `analysis/12_fresh_runs.py` | `results/12_fresh_runs.txt` | `check_claims.py` |
 
 ## Reproduce
 

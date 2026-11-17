@@ -1,0 +1,141 @@
+{
+ "C45": {
+  "gate_ok": 5471,
+  "n": 5471,
+  "first": {
+   "transitions": 10,
+   "r1_changes": 8,
+   "r1_gate_ok": 8
+  },
+  "settled": {
+   "agree": [
+    1415717,
+    0
+   ],
+   "disagree": [
+    35435,
+    367
+   ]
+  },
+  "pt": {
+   "changes": 830,
+   "rises": 0,
+   "partner_found": 830
+  },
+  "fo": {
+   "changes": 820,
+   "product_found": 820
+  },
+  "sw": {
+   "swaps": 683,
+   "total_gain_old": 682,
+   "strict_old": 682,
+   "strict_in_order": 683
+  },
+  "reset_step_labels": [
+   1
+  ],
+  "n_runs": 10
+ },
+ "C46": {
+  "by_step": {
+   "500": {
+    "single": [
+     2.673,
+     0.937,
+     2.158,
+     3.265
+    ],
+    "ten": [
+     2.306,
+     0.933,
+     2.042,
+     3.183
+    ]
+   },
+   "1000": {
+    "single": [
+     1.48,
+     0.267,
+     2.123,
+     3.265
+    ],
+    "ten": [
+     1.363,
+     0.258,
+     2.048,
+     3.183
+    ]
+   },
+   "2000": {
+    "single": [
+     0.896,
+     0.03,
+     2.058,
+     3.265
+    ],
+    "ten": [
+     0.949,
+     0.0,
+     1.988,
+     3.183
+    ]
+   }
+  },
+  "max_cells_per_press": {
+   "1": 10,
+   "2": 8,
+   "3": 10
+  },
+  "region4_counts_constant": true,
+  "max_gap_bits": 0.367
+ },
+ "C47": {
+  "by_block": {
+   "A": {
+    "real": 9.2,
+    "model": 7.84
+   },
+   "B": {
+    "real": 16.0,
+    "model": 11.42
+   },
+   "C": {
+    "real": 12.0,
+    "model": 9.48
+   },
+   "D": {
+    "real": 28.4,
+    "model": 15.06
+   }
+  },
+  "busy_D_real": 3,
+  "busy_D_model": 6,
+  "n_real": 10,
+  "n_model": 50
+ },
+ "C48": {
+  "by_dataset": {
+   "held-out": {
+    "cell_steps": 4500000,
+    "values_10_plus": 977,
+    "share": 0.00021711111111111112,
+    "outside_region3": 0
+   },
+   "fresh": {
+    "cell_steps": 1501000,
+    "values_10_plus": 386,
+    "share": 0.000257161892071952,
+    "outside_region3": 0
+   },
+   "Group 1": {
+    "cell_steps": 9156100,
+    "values_10_plus": 4146,
+    "share": 0.0004528128788457968,
+    "outside_region3": 0
+   }
+  },
+  "predicted": 0.00030000000000000003,
+  "observed": 0.00036346002863344573
+ }
+}

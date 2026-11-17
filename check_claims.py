@@ -126,6 +126,18 @@ CHECKS = [
      and g("C43")["by_block"]["D"]["real"] > 1.3 * g("C43")["by_block"]["D"]["model"]),
     ("C44", "deductions: Region 3 repeat chance about 0.28 and table entropy about 2.14 bits; Region 1 block with LOW inputs has stable states with 1, 2, 6 and 9 HIGH cells",
      lambda: abs(g("C44")["r3_same"] - 0.276) < 0.01 and abs(g("C44")["r3_entropy"] - 2.14) < 0.02 and g("C44")["r1_stable_states"]["000"] == [1, 2, 6, 9]),
+    ("C45", "every rule holds on the fresh runs (Region 1, settled cells, both Region 2 parts, Region 4)",
+     lambda: g("C45")["gate_ok"] == g("C45")["n"] > 0 and g("C45")["settled"]["agree"][1] == 0
+     and g("C45")["pt"]["rises"] == 0 and g("C45")["pt"]["partner_found"] == g("C45")["pt"]["changes"]
+     and g("C45")["fo"]["product_found"] == g("C45")["fo"]["changes"]
+     and g("C45")["sw"]["strict_in_order"] == g("C45")["sw"]["swaps"]),
+    ("C46", "a 10-step press changes at most 10 cells per region and keeps Region 4's counts",
+     lambda: max(g("C46")["max_cells_per_press"].values()) <= 10 and g("C46")["region4_counts_constant"]),
+    ("C47", "fresh runs: block D comparison recorded for every fresh run",
+     lambda: g("C47")["n_real"] >= 5),
+    ("C48", "values 10-13 occur only in Region 3, within a factor of 2 of the table's rate",
+     lambda: g("C48")["by_dataset"] and all(v["outside_region3"] == 0 for v in g("C48")["by_dataset"].values())
+     and 0.5 <= g("C48")["observed"] / g("C48")["predicted"] <= 2),
 ]
 
 lines = [f"{'claim':6s} {'result':6s} {'source':22s} condition"]

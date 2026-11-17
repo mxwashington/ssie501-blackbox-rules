@@ -44,5 +44,9 @@ C41    PASS   11_gate_rules          rebuilt model within 10% of the held-out ru
 C42    PASS   11_gate_rules          the first step after Reset follows the Region 1 gates in every Group 1 run
 C43    PASS   11_gate_rules          late Region 1 activity matches the rebuilt box in blocks A-C (within 15%) and is higher in block D
 C44    PASS   11_gate_rules          deductions: Region 3 repeat chance about 0.28 and table entropy about 2.14 bits; Region 1 block with LOW inputs has stable states with 1, 2, 6 and 9 HIGH cells
+C45    PASS   12_fresh_runs          every rule holds on the fresh runs (Region 1, settled cells, both Region 2 parts, Region 4)
+C46    PASS   12_fresh_runs          a 10-step press changes at most 10 cells per region and keeps Region 4's counts
+C47    PASS   12_fresh_runs          fresh runs: block D comparison recorded for every fresh run
+C48    PASS   12_fresh_runs          values 10-13 occur only in Region 3, within a factor of 2 of the table's rate
 
-45/45 claims pass.
+49/49 claims pass.
